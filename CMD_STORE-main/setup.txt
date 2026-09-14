@@ -1,0 +1,74 @@
+
+
+SQL DATABASE CREATE
+
+CREATE DATABASE IF NOT EXISTS cmd_store;
+USE cmd_store;
+
+CREATE TABLE users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(100) UNIQUE NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  role VARCHAR(20) NOT NULL DEFAULT 'user'
+);
+
+CREATE TABLE purchase_orders (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  creator_name VARCHAR(255),
+  date DATE,
+  po_no VARCHAR(50),
+  creator_employee_no VARCHAR(50),
+  name_of_work TEXT,
+  agency VARCHAR(255),
+  value_inr DECIMAL(15,2),
+  enq_type VARCHAR(100),
+  ord_plant VARCHAR(50),
+  rfx_type VARCHAR(50),
+  delivery_date DATE,
+  doc_type VARCHAR(20),
+  vendor_code VARCHAR(50),
+  city VARCHAR(100),
+  region VARCHAR(50),
+  amount_rs_l DECIMAL(15,2),
+  currency VARCHAR(10),
+  delv_amount_rs_l DECIMAL(15,2),
+  invoiced_amt_rs_l DECIMAL(15,2),
+  treds_partner VARCHAR(50),
+  ssc_ind CHAR(1),
+  ssc_name VARCHAR(100),
+  capex_opex VARCHAR(10),
+  freight_clause VARCHAR(50),
+  meg_ceg_indicator VARCHAR(50),
+  meg_ceg_enlistment_grp VARCHAR(50),
+  risk_cost_indicator VARCHAR(10),
+  risk_cost_po VARCHAR(50),
+  bidder_class VARCHAR(100),
+  bid_opening_dt DATE,
+  bg_applicability VARCHAR(50),
+  invoicing_party VARCHAR(255),
+  ecm_approval_no VARCHAR(100),
+  email VARCHAR(255),
+  dist_code VARCHAR(50),
+  mobile_no VARCHAR(20),
+  department_code VARCHAR(10),
+  dept_desc VARCHAR(100),
+  purchasing_group VARCHAR(10),
+  eproc_tag VARCHAR(50),
+  indent_type VARCHAR(50),
+  reason_text TEXT,
+  vendor_type VARCHAR(100),
+  pr_po_days INT,
+  sme_amt_inr DECIMAL(15,2),
+  addlenqinf VARCHAR(100),
+  released_by VARCHAR(10),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Insert default admin user (password: admin123)
+INSERT INTO users (username, password_hash, role)
+VALUES ('admin', '$2a$10$N9qo8uLOickgx2ZMRZoMy.MrTZ4rB1lPBhRw5c5EwJk8Xq4G4G4G4', 'admin');
+
+
+Delete row
+DELETE FROM purchase_orders;
