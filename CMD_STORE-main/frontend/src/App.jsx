@@ -24,7 +24,7 @@ const Layout = () => {
         <Outlet />
       </main>
       <footer className="bg-gray-800 text-white text-center py-4 text-sm mt-auto">
-        &copy; {new Date().getFullYear()} NTPC USSC Raipur. All rights reserved.
+        &copy; {new Date().getFullYear()} NTPC C&M SIKRI. All rights reserved.
       </footer>
     </div>
   );

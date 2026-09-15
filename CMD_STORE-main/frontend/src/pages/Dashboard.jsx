@@ -125,8 +125,8 @@ const Dashboard = () => {
       )}
 
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">
-          {!selectedPlant ? 'Ord. Plant Overview' : 
+        <h1 className="text-2xl  font-bold text-blue-900">
+          {!selectedPlant ? 'ORD. PLANT OVERVIEW' : 
            !selectedEnqType ? `Enq Type Distribution - Plant ${selectedPlant}` : 
            `Purchase Orders - Plant ${selectedPlant} / ${selectedEnqType}`}
         </h1>
@@ -150,7 +150,7 @@ const Dashboard = () => {
       <div className="bg-[#dbeafe] rounded-[16px] p-5 shadow-[0_4px_15px_rgba(0,0,0,0.05)] border border-[#b8d1ff] overflow-hidden">
         {!selectedPlant && (
           <PieChart 
-            title="Click on a Plant to view Enq Type distribution" 
+            title="CLICK ON A PLANT TO VIEW ENQ TYPE DISTRIBUTION" 
             labels={ordPlantData.labels} 
             data={ordPlantData.data} 
             onClick={(label) => setSelectedPlant(label)}
@@ -159,7 +159,7 @@ const Dashboard = () => {
 
         {selectedPlant && !selectedEnqType && (
           <PieChart 
-            title={`Enq Type Distribution for Plant ${selectedPlant} (Click to view POs)`}
+            title={`ENQ TYPE DISTRIBUTION FOR PLANT ${selectedPlant} (CLICK TO VIEW POS)`}
             labels={enqTypeDataForPlant.labels} 
             data={enqTypeDataForPlant.data} 
             onClick={(label) => setSelectedEnqType(label)}
@@ -201,7 +201,7 @@ const Dashboard = () => {
               ) : (
                 paginatedData.map((po) => (
                   <tr key={po.id} className="hover:bg-gray-50 transition">
-                    <td className="px-6 py-4 font-medium text-gray-900">{po.po_no}</td>
+                    <td className="px-6 py-4 font-medium text-black-900">{po.po_no}</td>
                     <td className="px-6 py-4">{po.creator_name}</td>
                     <td className="px-6 py-4">{po.agency}</td>
                     <td className="px-6 py-4">{parseFloat(po.value_inr).toLocaleString()}</td>

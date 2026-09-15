@@ -71,8 +71,8 @@ const PieChart = ({ title, labels, data, colors, onClick }) => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-96 flex flex-col cursor-pointer">
-      <h3 className="text-lg font-semibold text-gray-700 mb-4">{title}</h3>
+    <div className="bg-purple-100 p-6 rounded-xl shadow-sm border border-gray-100 h-96 flex flex-col cursor-pointer">
+      <h3 className="w-full bg-gradient-to-r from-[#0f2e9e] to-[#1e90ff] text-white text-center py-3 px-4 rounded-t-xl font-bold text-[14px] tracking-wider uppercase">{title}</h3>
       <div className="flex-1 relative">
         <Pie data={chartData} options={options} />
       </div>
