@@ -1,63 +1,82 @@
 import { useState } from 'react';
 import { poApi } from '../api/poApi';
 
-const UploadPage = () => {
+const Upload = () => {
   const [file, setFile] = useState(null);
-  const [status, setStatus] = useState({ type: '', message: '' });
-  const [isUploading, setIsUploading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
 
-  const handleUpload = async (e) => {
-    e.preventDefault();
-    if (!file) return setStatus({ type: 'error', message: 'Please select a file.' });
-
-    setIsUploading(true);
-    setStatus({ type: '', message: '' });
-
+  const handleUpload = async () => {
+    if (!file) {
+      setMessage('Please choose a file first!');
+      return;
+    }
+    setLoading(true);
+    setMessage('');
+    const formData = new FormData();
+    formData.append('file', file);
     try {
-      const response = await poApi.uploadExcel(file);
-      setStatus({ type: 'success', message: response.data.message });
+      const res = await poApi.upload(formData);
+      setMessage(res.data.message || 'Upload successful!');
       setFile(null);
-      e.target.reset();
-    } catch (error) {
-      setStatus({ 
-        type: 'error', 
-        message: error.response?.data?.error || 'Error uploading file.' 
-      });
+    } catch (err) {
+      setMessage(err.response?.data?.message || 'Upload failed!');
     } finally {
-      setIsUploading(false);
+      setLoading(false);
     }
   };
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Import Purchase Orders</h1>
-      <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 max-w-2xl">
-        <form onSubmit={handleUpload} className="space-y-6">
-          <div className="border-2 border-dashed border-gray-300 rounded-xl p-10 text-center hover:bg-gray-50 transition">
-            <input
-              type="file"
-              accept=".xlsx, .xls"
-              onChange={(e) => setFile(e.target.files[0])}
-              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-6 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"
-            />
-            <p className="mt-3 text-xs text-gray-400">Supported formats: .xlsx, .xls</p>
+    <div className="min-h-screen bg-[#eef2ff] px-4 py-8">
+      <div className="max-w-5xl mx-auto">
+        {/* Title */}
+        <h1 className="text-[18px] font-bold text-[#0e2e9c] text-center mb-4">
+          Import Purchase Orders
+        </h1>
+
+        {/* Card */}
+        <div className="bg-white rounded-xl shadow-md border border-[#c7d2fe] p-6 max-w-[480px] mx-auto mt-16">
+
+          {/* Dashed Box */}
+          <div className="border-2 border-dashed border-[#93c5fd] bg-[#f8faff] rounded-xl p-6 text-center hover:bg-[#eff6ff] transition">
+            <div className="flex items-center gap-3 justify-center mb-2">
+              <label className="bg-[#e0e7ff] text-[#0e2e9c] px-4 py-1.5 rounded-full text-[13px] font-bold cursor-pointer hover:bg-[#c7d2fe]">
+                Choose file
+                <input
+                  type="file"
+                  accept=".xlsx,.xls"
+                  className="hidden"
+                  onChange={(e) => setFile(e.target.files[0])}
+                />
+              </label>
+              <span className="text-[13px] text-[#334155] truncate">
+                {file? file.name : 'No file chosen'}
+              </span>
+            </div>
+            <p className="text-[11px] text-[#64748b] mt-3">
+              Supported formats:.xlsx,.xls
+            </p>
           </div>
+
+          {/* Button */}
           <button
-            type="submit"
-            disabled={!file || isUploading}
-            className="w-full py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:bg-gray-400 transition"
+            onClick={handleUpload}
+            disabled={loading}
+            className="w-full mt-5 bg-[#0e2e9c] text-white py-2.5 rounded-full font-bold text-[14px] hover:bg-[#0a1e6b] disabled:opacity-50 shadow-md transition"
           >
-            {isUploading ? 'Processing...' : 'Upload & Insert Data'}
+            {loading? 'Uploading...' : 'Upload & Insert Data'}
           </button>
-        </form>
-        {status.message && (
-          <div className={`mt-6 p-4 rounded-lg text-sm font-medium border ${status.type === 'error' ? 'bg-red-50 text-red-700 border-red-200' : 'bg-green-50 text-green-700 border-green-200'}`}>
-            {status.message}
-          </div>
-        )}
+
+          {/* Message */}
+          {message && (
+            <div className={`mt-4 p-3 rounded-lg text-sm text-center font-medium ${message.includes('success')? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
+              {message}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
 };
 
-export default UploadPage;
+export default Upload;
