@@ -1,29 +1,32 @@
-import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Header from './components/Header';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import UploadPage from './pages/UploadPage';
-// import AboutUs from './pages/AboutUs';
-// import Directory from './pages/Directory';
-// import Departments from './pages/Departments';
-// // import Corporate-Links from './pages/Corporate Links';
-// import Circulars from './pages/Circulars';
-// import DOP from './pages/DOP';
-// import Dsr from './pages/Dsr';
-// import Gcc from './pages/Gcc';
-// import Manuals from './pages/Manuals';
+import CmDepartment from './pages/CmDepartment'; // Import new page
+import DopPage from './pages/DopPage';           // Import new page
 
-// Layout component to include Header on all pages
 const Layout = () => {
   return (
-    <div className="min-h-screen bg-[#f5f7fb] flex flex-col">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
       <main className="flex-1">
-        <Outlet />
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/directory/c-and-m" element={<CmDepartment />} />
+          <Route path="/dop" element={<DopPage />} />
+          <Route path="/login" element={<Login />} />
+          
+          <Route element={<ProtectedRoute />}>
+            <Route path="/upload" element={<UploadPage />} />
+          </Route>
+
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
       </main>
-      <footer className="bg-[#86a7f0] text-blue text-center py-3 text-[12px] ">
+   <footer className="bg-[#86a7f0] text-blue text-center py-3 text-[20px]">
         &copy; {new Date().getFullYear()} NTPC C&M SIKRI. All rights reserved.
       </footer>
     </div>
@@ -34,30 +37,7 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <Routes>
-          {/* Public Routes */}
-          <Route element={<Layout />}>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/login" element={<Login />} />
-            
-            {/* Protected Admin Routes */}
-            <Route element={<ProtectedRoute />}>
-              <Route path="/upload" element={<UploadPage />} />
-            </Route>
-          </Route>
-
-          {/* <Route path="/about-us" element={<AboutUs />} />
-          <Route path="/directory" element={<Directory />} />
-          <Route path="/departments" element={<Departments/>} />
-          <Route path="/corporate-links" element={< Corporate Links/>} />
-          <Route path="/circulars & guidelines" element={<Circulars />} />
-          <Route path="/dOP" element={<DOP />} />
-          <Route path="/dsr" element={< Dsr/>} />
-          <Route path="/gcc" element={<Gcc />} />
-          <Route path="/manuals & standards" element={<Manuals />} /> */}
-
-          <Route path="/" element={<Navigate to="/" replace />} />
-        </Routes>
+        <Layout />
       </Router>
     </AuthProvider>
   );

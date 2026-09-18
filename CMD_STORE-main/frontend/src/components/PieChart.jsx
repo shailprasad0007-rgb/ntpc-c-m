@@ -48,7 +48,7 @@ const PieChart = ({ title, labels, data, colors, onClick }) => {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: { position: 'right' }, // Right side to give more space
+      legend: { position: 'right' },
       title: { display: false },
       tooltip: {
         callbacks: {
@@ -71,14 +71,12 @@ const PieChart = ({ title, labels, data, colors, onClick }) => {
   };
 
   return (
-    
-    <div className="bg-[#f8fafc] py-5 rounded-xl shadow-md border-b border-[#e2e8f0] h-120  flex flex-col cursor-pointer">
-      <h3 className="w-xs py-1.5 px-4 bg-gradient-to-r from-[#2248cf] to-[#6792be] text-[#f8fafd] text-[5px] tracking-wide uppercase font-bold text-[14px] ">{title}</h3>
+    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-96 flex flex-col cursor-pointer">
+      <h3 className="text-lg font-semibold text-gray-700 mb-4">{title}</h3>
       <div className="flex-1 relative">
         <Pie data={chartData} options={options} />
       </div>
     </div>
-    
   );
 };
 
