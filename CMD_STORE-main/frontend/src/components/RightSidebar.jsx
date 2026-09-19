@@ -6,16 +6,16 @@ import prashantImg from '../../public/prashant.jpeg';
 const profiles = [
   {
     name: 'DHANANJAY SHRIKHANDE',
-    title: 'HOP CBCMP',
     image: hop,
+    title: 'HOP CBCMP',
     accent: '#4338ca', // indigo-700
     accentSoft: '#eef2ff',
     gradient: 'from-indigo-600 to-blue-600',
   },
   {
     name: 'PRASHANT KUMAR GUPTA',
-    title: 'ADDL. GENERAL MANAGER',
     image: prashantImg,
+    title: 'HOD C&M (CBCMP & KDCMP SHARED SERVICE)',
     accent: '#0f766e', // teal-700
     accentSoft: '#00FFFF',
     gradient: 'from-emerald-600 to-teal-600',

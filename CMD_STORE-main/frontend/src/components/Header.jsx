@@ -23,7 +23,7 @@ const Header = () => {
     { name: 'Circulars & Guidelines', path: '/circulars' },
     { name: 'DOP', path: '/dop', hasDropdown: true },
     { name: 'DSR', path: '/dsr' },
-    { name: 'GCC', path: '/gcc' },
+    
     { name: 'Manuals & Standards', path: '/manuals' },
   ];
 

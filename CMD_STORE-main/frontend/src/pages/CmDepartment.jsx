@@ -30,8 +30,22 @@ const staffMembers = [
     // Replace with actual image paths
     image: '/pbr.jpg', 
   },
-  {
+    {
     id: 3,
+    name: 'Ashish Albert Kullu',
+    role: 'Dy. GENERAL MANAGER',
+    grade: 'E7',
+    department: 'C&M',
+    organization: 'NML',
+    location: 'KERANDARI',
+    empId: '101762',
+    mobile: '9109178536',
+    intercom: '--',
+    // Replace with actual image paths
+    image: '/.jpg', 
+  },
+  {
+    id: 4,
     name: 'Mahendra Singh',
     role: 'MANAGER',
     grade: 'E5',
@@ -45,7 +59,7 @@ const staffMembers = [
     image: '/mahend.jpg', 
   },
   {
-    id: 4,
+    id: 5,
     name: 'Jayant Prakash Sarvodaya',
     role: 'DEPUTY MANAGER',
     grade: 'E4',
@@ -57,6 +71,20 @@ const staffMembers = [
     intercom: '--',
     // Replace with actual image paths
     image: '/jp.jpg', 
+  },
+    {
+    id: 6,
+    name: 'Padmalochan Behra',
+    role: 'SR.ASSISTANT MANAGER',
+    grade: 'E1',
+    department: 'C&M',
+    organization: 'NML',
+    location: 'KERANDARI',
+    empId: '253030',
+    mobile: '9437489558',
+    intercom: '--',
+    // Replace with actual image paths
+    image: '/.jpg', 
   },
 ];
 
