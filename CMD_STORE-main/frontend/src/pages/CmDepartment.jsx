@@ -42,7 +42,7 @@ const staffMembers = [
     mobile: '9109178536',
     intercom: '--',
     // Replace with actual image paths
-    image: '/.jpg', 
+    image: '/kalku.jpg', 
   },
   {
     id: 4,
@@ -84,7 +84,7 @@ const staffMembers = [
     mobile: '9437489558',
     intercom: '--',
     // Replace with actual image paths
-    image: '/.jpg', 
+    image: '/pad.jpg', 
   },
 ];
 

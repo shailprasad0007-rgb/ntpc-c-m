@@ -26,7 +26,7 @@ const Layout = () => {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
-   <footer className="bg-[#86a7f0] text-blue text-center py-3 text-[20px]">
+   <footer className="w-full bg-[#0b3d91] text-white text-center py-3 text-[12px] font-medium tracking-wide">
         &copy; {new Date().getFullYear()} NTPC C&M SIKRI. All rights reserved.
       </footer>
     </div>

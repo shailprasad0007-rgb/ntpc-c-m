@@ -15,7 +15,7 @@ const profiles = [
   {
     name: 'PRASHANT KUMAR GUPTA',
     image: prashantImg,
-    title: 'HOD C&M (CBCMP & KDCMP SHARED SERVICE)',
+    title: 'HOD C&M (CBCMP & KDCMP SHARED)',
     accent: '#0f766e', // teal-700
     accentSoft: '#00FFFF',
     gradient: 'from-emerald-600 to-teal-600',
