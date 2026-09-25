@@ -17,7 +17,7 @@ const getPlantGroup = (code) => {
 
 const deriveStatus = (po) => {
   if (po.status) return po.status;
-  if (!po.ord_plant ||!po.agency) return 'Pending';
+  if (!po.ord_plant || !po.agency) return 'Pending';
   const days = parseInt(po.pr_po_days) || 0;
   if (days > 60) return 'In Progress';
   return 'Approved';
@@ -88,26 +88,26 @@ const Dashboard = () => {
   const searchFilteredData = useMemo(() => {
     return allPos.filter((po) => {
       const s = search.toLowerCase();
-      return!search || String(po.po_no).toLowerCase().includes(s) || po.agency?.toLowerCase().includes(s) || po.name_of_work?.toLowerCase().includes(s);
+      return !search || String(po.po_no).toLowerCase().includes(s) || po.agency?.toLowerCase().includes(s) || po.name_of_work?.toLowerCase().includes(s);
     });
   }, [allPos, search]);
 
   const kpis = useMemo(() => {
     const total = searchFilteredData.length;
     const totalValue = searchFilteredData.reduce((sum, po) => sum + (Number(po.value_inr) || 0), 0);
-    const avgDays = total > 0? searchFilteredData.reduce((sum, po) => sum + (Number(po.pr_po_days) || 0), 0) / total : 0;
+    const avgDays = total > 0 ? searchFilteredData.reduce((sum, po) => sum + (Number(po.pr_po_days) || 0), 0) / total : 0;
     return { total, totalValue, avgWeeks: avgDays / 7, pending: searchFilteredData.filter((po) => deriveStatus(po) === 'Pending').length };
   }, [searchFilteredData]);
 
   const insights = useMemo(() => {
     const total = searchFilteredData.length;
     const onTime = searchFilteredData.filter((po) => (Number(po.pr_po_days) || 0) <= 30).length;
-    return { onTime, onTimePct: total > 0? Math.round((onTime / total) * 100) : 0, pending: searchFilteredData.filter((po) => deriveStatus(po) === 'Pending').length, highValue: searchFilteredData.filter((po) => (Number(po.value_inr) || 0) > 1000000).length, mou: searchFilteredData.filter((po) => po.enq_type === 'MOU').length };
+    return { onTime, onTimePct: total > 0 ? Math.round((onTime / total) * 100) : 0, pending: searchFilteredData.filter((po) => deriveStatus(po) === 'Pending').length, highValue: searchFilteredData.filter((po) => (Number(po.value_inr) || 0) > 1000000).length, mou: searchFilteredData.filter((po) => po.enq_type === 'MOU').length };
   }, [searchFilteredData]);
 
   const plantGroupData = useMemo(() => {
     const counts = {};
-    searchFilteredData.forEach((po) => { const g = getPlantGroup(po.ord_plant); if (g && g!== 'Unknown') counts[g] = (counts[g] || 0) + 1; });
+    searchFilteredData.forEach((po) => { const g = getPlantGroup(po.ord_plant); if (g && g !== 'Unknown') counts[g] = (counts[g] || 0) + 1; });
     return { labels: Object.keys(counts), data: Object.values(counts) };
   }, [searchFilteredData]);
 
@@ -127,9 +127,9 @@ const Dashboard = () => {
 
   const tableData = useMemo(() => {
     return searchFilteredData.filter((po) => {
-      const mg =!selectedPlantGroup || getPlantGroup(po.ord_plant) === selectedPlantGroup;
-      const mp =!selectedPlant || String(po.ord_plant).trim() === String(selectedPlant).trim();
-      const me =!selectedEnqType || po.enq_type === selectedEnqType;
+      const mg = !selectedPlantGroup || getPlantGroup(po.ord_plant) === selectedPlantGroup;
+      const mp = !selectedPlant || String(po.ord_plant).trim() === String(selectedPlant).trim();
+      const me = !selectedEnqType || po.enq_type === selectedEnqType;
       return mg && mp && me;
     });
   }, [searchFilteredData, selectedPlantGroup, selectedPlant, selectedEnqType]);
@@ -143,6 +143,14 @@ const Dashboard = () => {
     if (!selectedEnqType) return `Enq Type Distribution - Plant ${selectedPlant}`;
     return `Purchase Orders - ${selectedPlantGroup} / ${selectedPlant} / ${selectedEnqType}`;
   };
+
+  const handleBack = () => {
+    if (selectedEnqType) setSelectedEnqType(null);
+    else if (selectedPlant) setSelectedPlant(null);
+    else setSelectedPlantGroup(null);
+  };
+
+  const showBack = selectedPlantGroup || selectedPlant || selectedEnqType;
 
   const currentDate = new Date().toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
@@ -178,20 +186,34 @@ const Dashboard = () => {
 
         {/* PIE CHART AKELE NICHE */}
         <div className="bg-white rounded-[20px] p-5 shadow-[0_4px_20px_rgba(0,0,0,0.04)] border border-gray-100 mb-6">
+          {/* Header row: title LEFT, back button RIGHT */}
+          <div className="flex items-start justify-between gap-4 mb-4">
+            <div>
+              <h3 className="text-[15px] font-bold text-gray-800">{getTitle()}</h3>
+              <p className="text-[11px] text-gray-400 mt-1">
+                Click on a Plant Group to view specific plant codes
+              </p>
+            </div>
+            {showBack && (
+              <button
+                onClick={handleBack}
+                className="shrink-0 px-4 py-2 text-xs bg-gray-900 text-white rounded-full font-bold hover:bg-gray-700 transition"
+              >
+                ← Back
+              </button>
+            )}
+          </div>
+
+          {/* DonutChart — no title/subtitle props passed */}
           <DonutChart
-            title={getTitle()}
-            subtitle="Click on a Plant Group to view specific plant codes"
-            labels={!selectedPlantGroup? plantGroupData.labels :!selectedPlant? specificPlantData.labels : enqTypeData.labels}
-            data={!selectedPlantGroup? plantGroupData.data :!selectedPlant? specificPlantData.data : enqTypeData.data}
+            labels={!selectedPlantGroup ? plantGroupData.labels : !selectedPlant ? specificPlantData.labels : enqTypeData.labels}
+            data={!selectedPlantGroup ? plantGroupData.data : !selectedPlant ? specificPlantData.data : enqTypeData.data}
             onClick={(label) => {
               if (!selectedPlantGroup) setSelectedPlantGroup(label);
               else if (!selectedPlant) setSelectedPlant(label);
               else setSelectedEnqType(label);
             }}
           />
-          {(selectedPlantGroup || selectedPlant || selectedEnqType) && (
-                <button onClick={() => { if (selectedEnqType) setSelectedEnqType(null); else if (selectedPlant) setSelectedPlant(null); else setSelectedPlantGroup(null); }} className="px-4 py-2 text-xs bg-gray-900 text-white rounded-full font-bold">← Back</button>
-              )}
         </div>
 
         {/* TABLE */}
@@ -205,8 +227,8 @@ const Dashboard = () => {
                 <input type="text" placeholder="Search PO No, Agency..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-8 pr-3 py-2 text-xs border border-gray-200 rounded-full focus:ring-2 focus:ring-blue-500 outline-none w-full md:w-64 bg-gray-50 focus:bg-white" />
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
               </div>
-              {(selectedPlantGroup || selectedPlant || selectedEnqType) && (
-                <button onClick={() => { if (selectedEnqType) setSelectedEnqType(null); else if (selectedPlant) setSelectedPlant(null); else setSelectedPlantGroup(null); }} className="px-4 py-2 text-xs bg-gray-900 text-white rounded-full font-bold">← Back</button>
+              {showBack && (
+                <button onClick={handleBack} className="px-4 py-2 text-xs bg-gray-900 text-white rounded-full font-bold hover:bg-gray-700 transition">← Back</button>
               )}
             </div>
           </div>
@@ -227,7 +249,7 @@ const Dashboard = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {loading? <tr><td colSpan={9} className="text-center py-12 text-gray-400">Loading...</td></tr> : paginatedData.length === 0? <tr><td colSpan={9} className="text-center py-12 text-gray-400">No records</td></tr> : paginatedData.map((po) => {
+                {loading ? <tr><td colSpan={9} className="text-center py-12 text-gray-400">Loading...</td></tr> : paginatedData.length === 0 ? <tr><td colSpan={9} className="text-center py-12 text-gray-400">No records</td></tr> : paginatedData.map((po) => {
                   const status = deriveStatus(po);
                   return (
                     <tr key={po.id} className="hover:bg-blue-50/40 transition">
@@ -248,12 +270,12 @@ const Dashboard = () => {
           </div>
 
           <div className="p-4 border-t border-gray-100 flex justify-between items-center bg-gray-50/50">
-            <span className="text-xs text-gray-500">Showing {total === 0? 0 : (page - 1) * limit + 1} to {Math.min(page * limit, total)} of {total}</span>
+            <span className="text-xs text-gray-500">Showing {total === 0 ? 0 : (page - 1) * limit + 1} to {Math.min(page * limit, total)} of {total}</span>
             <div className="flex items-center gap-1">
               <button disabled={page === 1} onClick={() => setPage(p => p - 1)} className="w-8 h-8 rounded-full bg-white border border-gray-200 disabled:opacity-40">‹</button>
               {Array.from({ length: Math.min(5, Math.ceil(total / limit) || 1) }, (_, i) => {
                 const tp = Math.ceil(total / limit) || 1; let s = Math.max(1, page - 2); if (s + 4 > tp) s = Math.max(1, tp - 4); const p = s + i; if (p > tp) return null;
-                return <button key={p} onClick={() => setPage(p)} className={`w-8 h-8 rounded-full text-xs font-bold ${p === page? 'bg-[#0b3d91] text-white' : 'bg-white border border-gray-200'}`}>{p}</button>;
+                return <button key={p} onClick={() => setPage(p)} className={`w-8 h-8 rounded-full text-xs font-bold ${p === page ? 'bg-[#0b3d91] text-white' : 'bg-white border border-gray-200'}`}>{p}</button>;
               })}
               <button disabled={page >= Math.ceil(total / limit)} onClick={() => setPage(p => p + 1)} className="w-8 h-8 rounded-full bg-white border border-gray-200 disabled:opacity-40">›</button>
             </div>
