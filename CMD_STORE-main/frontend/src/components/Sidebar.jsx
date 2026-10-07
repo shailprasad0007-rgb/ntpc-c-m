@@ -1,30 +1,79 @@
-import { useAuth } from '../context/AuthContext';
+// src/components/Sidebar.jsx
 import { NavLink } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import {
+  LayoutDashboard, Info, Folder, Link as LinkIcon,
+  FileText, TrendingUp, Database, BookOpen, ChevronRight,
+  Upload,
+} from 'lucide-react';
+
+const MENU = [
+  { name: 'Dashboard', path: '/', icon: LayoutDashboard },
+  { name: 'About Us', path: '/about-us', icon: Info },
+  { name: 'Directory', path: '/directory/c-and-m', icon: Folder },
+  { name: 'Important Links', path: '/important-links', icon: LinkIcon },
+  { name: 'Circulars & Guidelines', path: '/circulars', icon: FileText },
+  { name: 'DOP', path: '/dop', icon: TrendingUp },
+  { name: 'DSR', path: '/dsr', icon: Database },
+  { name: 'Manuals & Standards', path: '/manuals', icon: BookOpen },
+];
 
 const Sidebar = () => {
-  const { logout, user } = useAuth();
+  const { user } = useAuth();
 
   return (
-    <div className="w-64 bg-gray-900 text-white min-h-screen flex flex-col">
-      <div className="p-6 text-xl font-bold border-b border-gray-800">
-        Admin Panel
+    <aside
+      className="w-60 shrink-0 mt-4 ml-4 rounded-2xl sticky top-4  flex flex-col text-white border border-white/10 relative overflow-hidden shadow-xl"
+      style={{
+  backgroundImage: "url('/sidebar.jpg')",
+  backgroundSize: 'cover 100%',
+  backgroundPosition: 'center',
+  backgroundRepeat: 'no-repeat',
+}}
+    >
+      {/* Content — image ke upar direct */}
+      <div className="relative z-10 flex flex-col h-full w-full">
+
+        {/* Menu */}
+        <nav className="flex-1 py-4 overflow-y-auto sidebar-scroll mt-20">
+          {MENU.map((item) => (
+            <NavLink
+              key={item.name}
+              to={item.path}
+              end={item.path === '/'}
+              className={({ isActive }) =>
+                `flex items-center gap-3 mx-2 px-3 py-2.5 text-sm rounded-lg transition-all ${
+                  isActive
+                    ? 'bg-blue-600 text-white font-semibold shadow-lg'
+                    : 'text-gray-100 hover:bg-white/10 hover:text-white'
+                }`
+              }
+            >
+              <item.icon size={18} />
+              <span className="truncate">{item.name}</span>
+              <ChevronRight size={14} className="ml-auto opacity-40" />
+            </NavLink>
+          ))}
+
+          {/* Admin Upload — sirf admin ko */}
+          {user?.role === 'admin' && (
+            <NavLink
+              to="/upload"
+              className={({ isActive }) =>
+                `flex items-center gap-3 mx-2 px-3 py-2.5 text-sm rounded-lg transition-all ${
+                  isActive
+                    ? 'bg-blue-600 text-white font-semibold shadow-lg'
+                    : 'text-gray-100 hover:bg-white/10 hover:text-white'
+                }`
+              }
+            >
+              <Upload size={18} />
+              <span className="truncate">Admin Upload</span>
+            </NavLink>
+          )}
+        </nav>
       </div>
-      <nav className="flex-1 p-4 space-y-2">
-        <NavLink to="/dashboard" className={({isActive}) => `block px-4 py-3 rounded-lg transition ${isActive ? 'bg-blue-600' : 'hover:bg-gray-800'}`}>
-          Dashboard
-        </NavLink>
-        {user?.role === 'admin' && (
-          <NavLink to="/upload" className={({isActive}) => `block px-4 py-3 rounded-lg transition ${isActive ? 'bg-blue-600' : 'hover:bg-gray-800'}`}>
-            Upload Excel
-          </NavLink>
-        )}
-      </nav>
-      <div className="p-4 border-t border-gray-800">
-        <button onClick={logout} className="w-full px-4 py-2 bg-red-600 rounded-lg hover:bg-red-700 transition">
-          Logout
-        </button>
-      </div>
-    </div>
+    </aside>
   );
 };
 

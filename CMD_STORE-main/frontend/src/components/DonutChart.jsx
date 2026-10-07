@@ -13,7 +13,7 @@ function donutPath(cx, cy, innerR, outerR, startAngle, endAngle) {
   const endOuter = polarToCartesian(cx, cy, outerR, startAngle);
   const startInner = polarToCartesian(cx, cy, innerR, startAngle);
   const endInner = polarToCartesian(cx, cy, innerR, endAngle);
-  const largeArc = endAngle - startAngle > 180? 1 : 0;
+  const largeArc = endAngle - startAngle > 180 ? 1 : 0;
 
   return [
     `M ${startOuter.x} ${startOuter.y}`,
@@ -24,14 +24,14 @@ function donutPath(cx, cy, innerR, outerR, startAngle, endAngle) {
   ].join(' ');
 }
 
-const DonutChart = ({ title="Order Plant Group Overview", subtitle, labels=[], data=[], onClick }) => {
-  const total = data.reduce((a,b)=>a+b,0);
+const DonutChart = ({ labels = [], data = [], onClick }) => {
+  const total = data.reduce((a, b) => a + b, 0);
 
-  const segments = useMemo(()=>{
+  const segments = useMemo(() => {
     let acc = 0;
-    return data.map((v,i)=>{
+    return data.map((v, i) => {
       const start = acc;
-      const angle = total? (v/total)*360 : 0;
+      const angle = total ? (v / total) * 360 : 0;
       acc += angle;
       return {
         value: v,
@@ -41,17 +41,14 @@ const DonutChart = ({ title="Order Plant Group Overview", subtitle, labels=[], d
         endAngle: acc,
       };
     });
-  },[data, labels, total]);
+  }, [data, labels, total]);
 
-  if(!labels.length) return <div className="p-6 text-center text-gray-400 text-sm">No data</div>;
+  if (!labels.length) {
+    return <div className="p-6 text-center text-gray-400 text-sm">No data</div>;
+  }
 
   return (
     <div className="w-full">
-      <div className="mb-4">
-        <h3 className="text-[15px] font-bold text-gray-800">{title}</h3>
-        <p className="text-[11px] text-gray-400 mt-1">{subtitle}</p>
-      </div>
-
       <div className="flex flex-col md:flex-row items-center justify-center gap-10 py-4">
 
         {/* Clickable Donut - SVG */}
@@ -80,13 +77,13 @@ const DonutChart = ({ title="Order Plant Group Overview", subtitle, labels=[], d
 
         {/* Legend bhi clickable */}
         <div className="flex flex-col gap-2.5">
-          {segments.map((seg,i)=>(
+          {segments.map((seg, i) => (
             <div
               key={i}
-              onClick={()=>onClick?.(seg.label)}
+              onClick={() => onClick?.(seg.label)}
               className="flex items-center gap-3 px-4 py-2.5 bg-gray-50 hover:bg-white border border-gray-100 hover:shadow-md rounded-xl cursor-pointer transition-all"
             >
-              <span className="w-3.5 h-3.5 rounded-full" style={{background: seg.color}}></span>
+              <span className="w-3.5 h-3.5 rounded-full" style={{ background: seg.color }}></span>
               <span className="text-[13px] font-bold text-gray-700">{seg.label}</span>
               <span className="text-[13px] font-bold ml-auto">{seg.value}</span>
             </div>

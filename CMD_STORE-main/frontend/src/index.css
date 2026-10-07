@@ -5,34 +5,31 @@ html, body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
-/* Premium Scrollbar - sirf dikhne me premium lagega */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: #f1f5f9;
-}
-::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 10px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
-}
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #f1f5f9; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-/* Card hover lift effect - aapke dashboard cards upar uthenge */
-.card-hover {
-  transition: all 0.3s ease;
-}
+.card-hover { transition: all 0.3s ease; }
 .card-hover:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 30px rgba(0,0,0,0.08) !important;
 }
 
-/* Table row hover smooth */
-tbody tr {
-  transition: background 0.2s ease;
+tbody tr { transition: background 0.2s ease; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
+.animate-fadeIn { animation: fadeIn 0.25s ease-out; }
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-slideDown { animation: slideDown 0.3s ease-out; }
