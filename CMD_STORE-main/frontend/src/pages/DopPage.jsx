@@ -30,10 +30,19 @@ const documents = [
 
 const DopPage = () => {
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-5xl mx-auto">
+    <div className="min-h-screen bg-gray-50 ">
+      <div className="max-w-[1600px] mx-auto px-4 py-5">
+
+        {/* Breadcrumb */}
+        <div className="flex items-center gap-2 text-xs text-gray-500 bg-white px-3 py-1.5 rounded-full border border-gray-200 shadow-sm w-fit mb-5">
+          <span className="font-semibold text-blue-700">Home</span>
+          <span>›</span>
+          <span>Delegation of Powers (DOP)</span>
+        </div>
         
         {/* Page Header */}
+        <div className="max-w-[1600px] mx-auto px-10 py-5">
+        <div className="bg-white rounded-[20px] p-19 shadow-[0_4px_20px_rgba(0,0,0,0.04)] border border-gray-100">
         <div className="text-center mb-12">
           <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Delegation of Powers (DOP)</h1>
           <p className="mt-3 text-lg text-gray-500 max-w-2xl mx-auto">
@@ -95,6 +104,8 @@ const DopPage = () => {
         </div>
 
       </div>
+    </div>
+    </div>
     </div>
   );
 };

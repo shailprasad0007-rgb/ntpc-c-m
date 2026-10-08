@@ -1,73 +1,40 @@
 // src/App.jsx
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
-import ProtectedRoute from './components/ProtectedRoute';
-// import Header from './components/Header';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
 import Sidebar from './components/Sidebar';
-// import Topbar from './components/Topbar';
-import Login from './pages/Login';
+
 import Dashboard from './pages/Dashboard';
-import UploadPage from './pages/UploadPage';
+import Login from './pages/Login';
+import AboutUs from './pages/AboutUs';
 import CmDepartment from './pages/CmDepartment';
+import ImportantLinks from './pages/ImportantLinks';
+import Circulars from './pages/Circulars';
 import DopPage from './pages/DopPage';
+// import DSR from './pages/DSR';
+import Manuals from './pages/Manuals';
 
-const AppLayout = () => {
-  const location = useLocation();
-  const isLoginPage = location.pathname === '/login';
-
-  // Login page pe sidebar/topbar nahi dikhana
-  if (isLoginPage) {
-    return (
-      <Routes>
-        <Route path="/login" element={<Login />} />
-      </Routes>
-    );
-  }
-
+const App = () => {
   return (
-    <div className="flex min-h-screen bg-slate-50">
-      {/* LEFT SIDEBAR — always visible (except login) */}
-      <Sidebar />
+    <BrowserRouter>
+      <div className="flex min-h-screen bg-[#f5f7fb]">
+        <Sidebar />
 
-      {/* RIGHT SIDE */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* TOP BAR — search, bell, admin */}
-        {/* <Topbar /> */}
-
-        {/* HEADER — NTPC logo + nav (aapka existing) */}
-        {/* <Header /> */}
-
-        {/* MAIN CONTENT */}
-        <main className="flex-1">
+        <main className="flex-1 min-w-0 min-h-screen">
           <Routes>
             <Route path="/" element={<Dashboard />} />
-            <Route path="/directory/c-and-m" element={<CmDepartment />} />
-            <Route path="/dop" element={<DopPage />} />
-
-            <Route element={<ProtectedRoute />}>
-              <Route path="/upload" element={<UploadPage />} />
-            </Route>
-
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/about-us" element={<AboutUs />} />
+            <Route path="/cmdepartment" element={<CmDepartment />} />
+            <Route path="/important-links" element={<ImportantLinks />} />
+            <Route path="/circulars" element={<Circulars />} />
+            <Route path="/doppage" element={<DopPage />} />
+            {/* <Route path="/dsr" element={<DSR />} /> */}
+            <Route path="/manuals" element={<Manuals />} />
           </Routes>
         </main>
-
-        <footer className="w-full bg-[#0b3d91] text-white text-center py-3 text-[12px] font-medium tracking-wide">
-          © {new Date().getFullYear()} NTPC C&M SIKRI. All rights reserved.
-        </footer>
       </div>
-    </div>
+    </BrowserRouter>
   );
 };
-
-function App() {
-  return (
-    <AuthProvider>
-      <Router>
-        <AppLayout />
-      </Router>
-    </AuthProvider>
-  );
-}
 
 export default App;
