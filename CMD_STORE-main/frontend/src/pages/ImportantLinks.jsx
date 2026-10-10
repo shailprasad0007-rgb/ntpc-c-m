@@ -1,10 +1,10 @@
-// src/pages/ImportantLinks.jsx
+// src/pages/ExternalLinks.jsx
 const LINKS_DATA = [
   {
     id: 1,
-    title: 'NTPC HOME PAGE',
-    description: 'Official NTPC website — corporate information & updates',
-    url: 'https://www.ntpc.co.in',
+    title: 'GEM TENDER',
+    description: 'Official GEM tender website — procurement information & updates',
+    url: 'https://www.gem.gov.in',
     theme: 'blue',
     bg: 'bg-blue-50',
     text: 'text-blue-600',
@@ -14,9 +14,9 @@ const LINKS_DATA = [
   },
   {
     id: 2,
-    title: 'NML HOME PAGE',
-    description: 'NML official portal — mining operations & updates',
-    url: 'https://www.nML.co.in',
+    title: 'NTPC TENDER',
+    description: 'NTPC official portal — procurement information & updates',
+    url: 'https://www.ntpc.co.in',
     theme: 'emerald',
     bg: 'bg-emerald-50',
     text: 'text-emerald-600',
@@ -24,7 +24,42 @@ const LINKS_DATA = [
     border: 'border-emerald-100',
     btnHover: 'hover:bg-emerald-600',
   },
-  
+  {
+    id: 3,
+    title: 'UDYAM VERIFICATION',
+    description: 'NTPC official portal — procurement information & updates',
+    url: 'https://www.ntpc.co.in',
+    theme: 'red',
+    bg: 'bg-red-50',
+    text: 'text-red-600',
+    hoverBg: 'group-hover:bg-red-600',
+    border: 'border-red-100',
+    btnHover: 'hover:bg-red-600',
+  },
+  {
+    id: 4,
+    title: 'BIS LINE',
+    description: 'NTPC official portal — procurement information & updates',
+    url: 'https://www.ntpc.co.in',
+    theme: 'yellow',
+    bg: 'bg-yellow-50',
+    text: 'text-yellow-600',
+    hoverBg: 'group-hover:bg-yellow-600',
+    border: 'border-yellow-100',
+    btnHover: 'hover:bg-yellow-600',
+  },
+  {
+    id: 5,
+    title: 'GST NSM CODE',
+    description: 'NTPC official portal — procurement information & updates',
+    url: 'https://www.ntpc.co.in',
+    theme: 'pink',
+    bg: 'bg-pink-50',
+    text: 'text-pink-600',
+    hoverBg: 'group-hover:bg-pink-600',
+    border: 'border-pink-100',
+    btnHover: 'hover:bg-pink-600',
+  },
 ];
 
 const ImportantLinks = () => {

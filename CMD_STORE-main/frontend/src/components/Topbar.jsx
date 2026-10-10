@@ -13,19 +13,31 @@ const Topbar = () => {
       <img
   src={topbar}
   alt="Shared Service Site C&M"
-  className="w-full h-auto block"
+  className="w-full h-45 lock"
 />
 
       {/* Dark gradient overlay — text readable */}
-      {/* <div className="absolute inset-0 bg-gradient-to-r from-[#0b1e3a]/85 via-[#0b1e3a]/40 to-transparent pointer-events-none"></div> */}
+      {/* <div className="absolute inset-0 bg-gradient-to-r from-[#0b1e3a]/85 via-[#0b1e3a]/40 to-transparent pointer-events-none">
+      <h2 className='text-white ml-5'>Welcome </h2>
+      <h2 className='text-white'>Shared Service Site C&M</h2>
+      <h4 className='text-white'>CBCMP & KDCMP</h4>
+      </div> */}
+
+      <div className="absolute inset-0  pointer-events-none m-10">
+        <h1 className="text-xl text-white font-bold font-['Poppins']  tracking-wider">Welcome</h1>
+
+        <h2 className="text-2xl text-white font-semibold font-['Poppins'] tracking-widest ">Shared Service Site C&M</h2>
+
+        <h3 className="text-[15px] text-white font-semibold font-[Poppins'] tracking-widest mt-1 opacity-90">CBCMP & KDCMP</h3>
+      </div>
 
       {/* ===================== NTPC LOGO (TOP-LEFT) ===================== */}
       <div className="absolute top-3 right-4 md:right-6 z-20 flex items-center gap-3">
         <div className="rounded-lg px-4 py-2 flex items-center justify-center">
           <img
-            src="/ntpc-logo.png"
+            src="/nml_logo.png"
             alt="NTPC Logo"
-            className="h-24 md:h-24 w-auto object-contain"
+            className="h-10 md:h-15 w-auto object-contain"
           />
         </div>
       </div>

@@ -19,6 +19,7 @@ const Header = () => {
     { name: 'About Us', path: '/about-us' },
     { name: 'CmDepartment', path: '/cmdepartment', hasDropdown: true },
     { name: 'Important Links', path: '/important-links', hasDropdown: true },
+    // { name: 'External Links', path: '/external-links', hasDropdown: true },
     { name: 'Circulars & Guidelines', path: '/circulars', hasDropdown: true },
     { name: 'DopPage', path: '/doppage', hasDropdown: true },
     { name: 'DSR', path: '/dsr' },
@@ -145,6 +146,7 @@ const Header = () => {
                         </a>
                       </>
                     )}
+                    
 
                     {/* ===================== CIRCULARS DROPDOWN ===================== */}
                     {item.name === 'Circulars & Guidelines' && (
@@ -193,7 +195,7 @@ const Header = () => {
                       </>
                     )} */}
 
-                    {/* {item.name === 'Manuals & Standards' && (
+                    {item.name === 'Manuals & Standards' && (
                       <>
                         <a
                           href="/Purchase_Manual_2018.pdf"
@@ -214,7 +216,7 @@ const Header = () => {
                           <span className="font-semibold">Stores Manual 2018</span>
                         </a>
                       </>
-                    )} */}
+                    )}
 
                   </div>
                 </div>

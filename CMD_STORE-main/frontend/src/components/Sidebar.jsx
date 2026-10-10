@@ -10,11 +10,13 @@ import {
 const MENU = [
   { name: 'Dashboard', path: '/', icon: LayoutDashboard },
   { name: 'About Us', path: '/about-us', icon: Info },
-  { name: 'Directory', path: '/directory/c-and-m', icon: Folder },
+  { name: 'CmDepartment', path: '/cmdepartment', icon: Folder },
   { name: 'Important Links', path: '/important-links', icon: LinkIcon },
+  { name: 'External Links', path: '/external-links', icon: LinkIcon },
+  { name: 'Coal Mining Links', path: '/coal-mining-links', icon: LinkIcon },
   { name: 'Circulars & Guidelines', path: '/circulars', icon: FileText },
-  { name: 'DOP', path: '/dop', icon: TrendingUp },
-  { name: 'DSR', path: '/dsr', icon: Database },
+  { name: 'DopPage', path: '/doppage', icon: TrendingUp },
+  // { name: 'DSR', path: '/dsr', icon: Database },
   { name: 'Manuals & Standards', path: '/manuals', icon: BookOpen },
 ];
 
@@ -23,19 +25,27 @@ const Sidebar = () => {
 
   return (
     <aside
-      className="w-60 shrink-0 mt-4 ml-4 rounded-2xl sticky top-4  flex flex-col text-white border border-white/10 relative overflow-hidden shadow-xl"
+      className="w-60 h-500 mt-4 ml-4 rounded-2xl sticky top-4 h-[calc(100vh-2rem)] flex flex-col text-white border border-white/10 relative overflow-hidden shadow-xl"
       style={{
-  backgroundImage: "url('/sidebar.jpg')",
-  backgroundSize: 'cover 100%',
-  backgroundPosition: 'center',
-  backgroundRepeat: 'no-repeat',
-}}
+        backgroundImage: "url('/sidebar.jpg')",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center 40%',
+        backgroundRepeat: 'no-repeat',
+      }}
     >
-      {/* Content — image ke upar direct */}
       <div className="relative z-10 flex flex-col h-full w-full">
 
+        {/* NML LOGO */}
+        <div className="flex items-center justify-center pt-5 pb-3 shrink-0">
+          <img
+            src="/ntpc_logo.jpg"
+            alt="NML Logo"
+            className="w-24 h-auto object-contain drop-shadow-lg"
+          />
+        </div>
+
         {/* Menu */}
-        <nav className="flex-1 py-4 overflow-y-auto sidebar-scroll mt-20">
+        <nav className="flex-1 pb-4 overflow-y-auto sidebar-scroll">
           {MENU.map((item) => (
             <NavLink
               key={item.name}
@@ -55,7 +65,6 @@ const Sidebar = () => {
             </NavLink>
           ))}
 
-          {/* Admin Upload — sirf admin ko */}
           {user?.role === 'admin' && (
             <NavLink
               to="/upload"
