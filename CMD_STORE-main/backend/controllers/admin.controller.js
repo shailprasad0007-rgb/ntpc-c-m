@@ -89,8 +89,14 @@ export const uploadExcel = [
 // Update a purchase order
 export const updatePO = async (req, res) => {
   const { id } = req.params;
-  const updated = await PurchaseOrder.update(id, req.body);
+  console.log("PUT Request received for ID:", id); // <--- ADD THIS
+  
+  // Ensure ID is an integer (fixes some Postgres/MySQL type mismatches)
+  const numericId = Number(id);
+  
+  const updated = await PurchaseOrder.update(numericId, req.body);
   if (!updated) {
+    console.log("No record found for ID:", numericId); // <--- ADD THIS
     return res.status(404).json({ error: 'Record not found' });
   }
   res.json(updated);

@@ -19,7 +19,7 @@ const Login = () => {
     setIsLoading(true);
     const result = await login(username, password);
     if (result.success) {
-      navigate('/');                    // 👈 ye change kiya (pehle /upload tha)
+      navigate('/');                    
     } else {
       setError(result.message);
     }

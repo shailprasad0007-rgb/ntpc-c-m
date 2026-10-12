@@ -1,3 +1,4 @@
+// src/pages/UploadPage.jsx
 import { useState, useRef, useCallback } from 'react';
 import { poApi } from '../api/poApi';
 
@@ -18,6 +19,16 @@ const UploadPage = () => {
     }
     setStatus({ type: '', message: '' });
     setFile(f);
+
+    // 👇 File select hote hi download trigger
+    const url = URL.createObjectURL(f);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = f.name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
   const handleDrop = useCallback((e) => {
@@ -58,17 +69,13 @@ const UploadPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/40 to-slate-50 px-6 py-10">
       <div className="max-w-2xl mx-auto">
-        {/* Header */}
         <div className="mb-8">
-          
           <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Import Purchase Orders</h1>
           <p className="mt-1.5 text-sm text-gray-500">Upload an Excel file to bulk-insert purchase order records.</p>
         </div>
 
-        {/* Card */}
         <div className="bg-white rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.05),0_20px_40px_-24px_rgba(15,23,42,0.15)] border border-gray-100 overflow-hidden">
           <form onSubmit={handleUpload} className="p-6 sm:p-8 space-y-6">
-            {/* Dropzone */}
             <div
               onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
               onDragLeave={() => setIsDragging(false)}
@@ -92,7 +99,6 @@ const UploadPage = () => {
 
               {!file ? (
                 <>
-                  {/* Upload icon */}
                   <div className="mx-auto mb-4 w-14 h-14 rounded-2xl bg-white shadow-sm border border-gray-100 flex items-center justify-center">
                     <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M12 12v9m0-9l-3 3m3-3l3 3" />
@@ -128,7 +134,6 @@ const UploadPage = () => {
               )}
             </div>
 
-            {/* Submit button */}
             <button
               type="submit"
               disabled={!file || isUploading}
@@ -146,10 +151,9 @@ const UploadPage = () => {
             </button>
           </form>
 
-          {/* Status banner */}
           {status.message && (
             <div
-              className={`mx-6 sm:mx-8 mb-6 sm:mb-8 -mt-2 p-4 rounded-xl text-sm font-medium border flex items-start gap-3 animate-[fadeIn_0.25s_ease-out] ${
+              className={`mx-6 sm:mx-8 mb-6 sm:mb-8 -mt-2 p-4 rounded-xl text-sm font-medium border flex items-start gap-3 ${
                 status.type === 'error'
                   ? 'bg-red-50 text-red-700 border-red-200'
                   : 'bg-emerald-50 text-emerald-700 border-emerald-200'
@@ -167,7 +171,6 @@ const UploadPage = () => {
           )}
         </div>
 
-        {/* Helper note */}
         <p className="mt-5 text-center text-xs text-gray-400">
           Make sure column headers match the expected template before uploading.
         </p>

@@ -2,17 +2,20 @@ import { useMemo, useState } from 'react';
 import BarChart from './BarChart';
 
 const TIME_VIEWS = [
+  { key: 'days', label: 'Days' },
   { key: 'weeks', label: 'Weeks' },
   { key: 'months', label: 'Months' },
   { key: 'quarterly', label: 'Quarterly' },
   { key: 'yearly', label: 'Yearly' },
-  { key: 'both', label: 'Weeks & Months' },
 ];
 
 const ENQ_COLORS = ['#3b82f6', '#f59e0b', '#22c55e', '#ef4444', '#8b5cf6', '#14b8a6'];
 
+// Values to exclude from the chart entirely
+const EXCLUDED_ENQ_TYPES = ['Unknown', 'NA', 'N/A', 'na', ''];
+
 const PoTimeAnalysis = ({ pos, compact = false }) => {
-  const [timeView, setTimeView] = useState('both');
+  const [timeView, setTimeView] = useState('days');
 
   const { chartData } = useMemo(() => {
     if (!pos.length) return { chartData: { labels: [], datasets: [] } };
@@ -20,7 +23,8 @@ const PoTimeAnalysis = ({ pos, compact = false }) => {
     const byEnqType = {};
     pos.forEach((po) => {
       const type = po.enq_type;
-      if (!type || type === 'Unknown') return;
+      // Skip excluded values
+      if (!type || EXCLUDED_ENQ_TYPES.includes(String(type).trim())) return;
       const days = parseFloat(po.pr_po_days) || 0;
       if (!byEnqType[type]) byEnqType[type] = [];
       byEnqType[type].push(days);
@@ -28,6 +32,8 @@ const PoTimeAnalysis = ({ pos, compact = false }) => {
 
     const enqTypes = Object.keys(byEnqType).sort();
     const avg = (arr) => (arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0);
+
+    const daysValues = enqTypes.map((t) => avg(byEnqType[t]));
     const weeksValues = enqTypes.map((t) => avg(byEnqType[t]) / 7);
     const monthsValues = enqTypes.map((t) => avg(byEnqType[t]) / 30);
 
@@ -45,7 +51,8 @@ const PoTimeAnalysis = ({ pos, compact = false }) => {
       const groups = {};
       pos.forEach((po) => {
         const type = po.enq_type;
-        if (!type || type === 'Unknown') return;
+        // Skip excluded values here too
+        if (!type || EXCLUDED_ENQ_TYPES.includes(String(type).trim())) return;
         const key = keyFn(po.date);
         if (!key) return;
         if (!groups[key]) groups[key] = {};
@@ -55,45 +62,66 @@ const PoTimeAnalysis = ({ pos, compact = false }) => {
       return groups;
     };
 
-    if (timeView === 'both') {
+    // ---- DAYS ----
+    if (timeView === 'days') {
+      return {
+        chartData: {
+          labels: enqTypes,
+          datasets: [
+            {
+              label: 'PO Lead Time (Days)',
+              data: daysValues,
+              backgroundColor: '#3b82f6',
+              borderRadius: 6,
+            },
+          ],
+        },
+      };
+    }
+
+    // ---- WEEKS ----
+    if (timeView === 'weeks') {
       return {
         chartData: {
           labels: enqTypes,
           datasets: [
             { label: 'Average (Weeks)', data: weeksValues, backgroundColor: '#3b82f6', borderRadius: 6 },
+          ],
+        },
+      };
+    }
+
+    // ---- MONTHS ----
+    if (timeView === 'months') {
+      return {
+        chartData: {
+          labels: enqTypes,
+          datasets: [
             { label: 'Average (Months)', data: monthsValues, backgroundColor: '#22c55e', borderRadius: 6 },
           ],
         },
       };
     }
-    if (timeView === 'weeks') {
-      return {
-        chartData: {
-          labels: enqTypes,
-          datasets: [{ label: 'Average (Weeks)', data: weeksValues, backgroundColor: '#3b82f6', borderRadius: 6 }],
-        },
-      };
-    }
-    if (timeView === 'months') {
-      return {
-        chartData: {
-          labels: enqTypes,
-          datasets: [{ label: 'Average (Months)', data: monthsValues, backgroundColor: '#22c55e', borderRadius: 6 }],
-        },
-      };
-    }
 
+    // ---- QUARTERLY / YEARLY ----
     const groups = timeView === 'quarterly' ? groupByKey(quarterKey) : groupByKey(yearKey);
     const groupLabels = Object.keys(groups).sort();
-    const allTypes = [...new Set(pos.map((p) => p.enq_type).filter((t) => t && t !== 'Unknown'))].sort();
+
+    // Get unique enquiry types, filtering out excluded values
+    const allTypes = [
+      ...new Set(
+        pos
+          .map((p) => p.enq_type)
+          .filter((t) => t && !EXCLUDED_ENQ_TYPES.includes(String(t).trim()))
+      ),
+    ].sort();
 
     const datasets = allTypes.map((type, i) => ({
       label: type,
       data: groupLabels.map((g) => {
         const days = groups[g][type] || [];
         if (!days.length) return 0;
-        const divisor = timeView === 'quarterly' ? 7 : 30;
-        return days.reduce((a, b) => a + b, 0) / days.length / divisor;
+        return days.reduce((a, b) => a + b, 0) / days.length;
       }),
       backgroundColor: ENQ_COLORS[i % ENQ_COLORS.length],
       borderRadius: 6,
@@ -103,7 +131,12 @@ const PoTimeAnalysis = ({ pos, compact = false }) => {
   }, [pos, timeView]);
 
   const yLabel =
-    timeView === 'months' || timeView === 'yearly' ? 'Average (Months)' : 'Average (Weeks)';
+    timeView === 'days' ? 'PO Lead Time (Days)' :
+    timeView === 'months' ? 'Average (Months)' :
+    timeView === 'quarterly' || timeView === 'yearly' ? 'Average (Days)' :
+    'Average (Weeks)';
+
+  const xLabel = timeView === 'quarterly' || timeView === 'yearly' ? 'Period' : 'Enquiry Type';
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden h-full flex flex-col">
@@ -116,8 +149,8 @@ const PoTimeAnalysis = ({ pos, compact = false }) => {
             </svg>
           </div>
           <div className="min-w-0">
-            <h3 className="text-sm font-bold text-gray-800 truncate">PO Completion Performance</h3>
-            <p className="text-[10px] text-gray-400 truncate">Average time (Weeks & Months) - Average time from PR to PO completion</p>
+            <h3 className="text-sm font-bold text-gray-800 truncate">PO Lead Time Analysis</h3>
+            <p className="text-[10px] text-gray-400 truncate">Average lead time from PR to PO completion · Based on Enquiry Type</p>
           </div>
         </div>
 
@@ -144,7 +177,7 @@ const PoTimeAnalysis = ({ pos, compact = false }) => {
           labels={chartData.labels}
           datasets={chartData.datasets}
           yAxisLabel={yLabel}
-          xAxisLabel="Enquiry Type"
+          xAxisLabel={xLabel}
         />
       </div>
     </div>

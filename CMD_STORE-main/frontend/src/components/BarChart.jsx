@@ -12,8 +12,6 @@ import {
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 // ---------- LOCAL PLUGIN (NOT globally registered) ----------
-// Only attached to this Bar chart via the `plugins` prop below.
-// This prevents it from running on PieCharts.
 const valueLabelsPlugin = {
   id: 'valueLabels',
   afterDatasetsDraw(chart) {
@@ -31,10 +29,12 @@ const valueLabelsPlugin = {
         const x = bar.x;
         const y = bar.y;
 
-        // Skip labels that would go above the chart area
         if (y - 30 < chartArea.top) return;
 
-        const text = Number(value).toFixed(1);
+        // Day values: no decimals. Week/Month values: 1 decimal.
+        const isDayValue = Number(value) >= 10 || Number.isInteger(Number(value)) && Number(value) > 5;
+        const text = isDayValue ? String(Math.round(Number(value))) : Number(value).toFixed(1);
+
         ctx.save();
         ctx.font = 'bold 10px Inter, system-ui, sans-serif';
 
@@ -44,14 +44,13 @@ const valueLabelsPlugin = {
         const pillX = x - pillWidth / 2;
         const pillY = y - pillHeight - 6;
 
-        // Pill background (white with shadow)
+        // Pill background
         ctx.shadowColor = 'rgba(15, 23, 42, 0.12)';
         ctx.shadowBlur = 6;
         ctx.shadowOffsetY = 1;
         ctx.fillStyle = '#ffffff';
         ctx.beginPath();
 
-        // Rounded rectangle
         const r = 9;
         ctx.moveTo(pillX + r, pillY);
         ctx.lineTo(pillX + pillWidth - r, pillY);
@@ -65,15 +64,17 @@ const valueLabelsPlugin = {
         ctx.closePath();
         ctx.fill();
 
-        // Subtle border
+        // Border color by dataset
         ctx.shadowBlur = 0;
         ctx.shadowOffsetY = 0;
-        ctx.strokeStyle = datasetIndex === 0 ? '#bfdbfe' : '#bbf7d0';
+        const borderColors = ['#bfdbfe', '#bbf7d0', '#fde68a', '#fecaca', '#ddd6fe', '#99f6e4'];
+        const textColors = ['#1d4ed8', '#15803d', '#b45309', '#b91c1c', '#6d28d9', '#0f766e'];
+        ctx.strokeStyle = borderColors[datasetIndex % borderColors.length];
         ctx.lineWidth = 1;
         ctx.stroke();
 
         // Text
-        ctx.fillStyle = datasetIndex === 0 ? '#1d4ed8' : '#15803d';
+        ctx.fillStyle = textColors[datasetIndex % textColors.length];
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(text, x, pillY + pillHeight / 2);
@@ -84,7 +85,7 @@ const valueLabelsPlugin = {
   },
 };
 
-const BarChart = ({ labels, datasets, yAxisLabel = 'Average Time', xAxisLabel = 'Enquiry Type' }) => {
+const BarChart = ({ labels, datasets, yAxisLabel = 'PO Lead Time (Days)', xAxisLabel = 'Enquiry Type' }) => {
   const data = { labels, datasets };
 
   const options = {
@@ -114,7 +115,12 @@ const BarChart = ({ labels, datasets, yAxisLabel = 'Average Time', xAxisLabel = 
         displayColors: true,
         boxPadding: 4,
         callbacks: {
-          label: (context) => `  ${context.dataset.label}: ${context.parsed.y.toFixed(1)}`,
+          label: (context) => {
+            const v = context.parsed.y;
+            // Show whole number for days, 1 decimal for weeks/months
+            const formatted = v >= 10 || Number.isInteger(v) ? Math.round(v) : v.toFixed(1);
+            return `  ${context.dataset.label}: ${formatted}`;
+          },
         },
       },
     },
@@ -142,7 +148,6 @@ const BarChart = ({ labels, datasets, yAxisLabel = 'Average Time', xAxisLabel = 
           color: '#64748b',
           font: { size: 11, family: 'Inter, system-ui, sans-serif' },
           padding: 8,
-          stepSize: 2,
         },
         title: {
           display: true,
@@ -155,7 +160,6 @@ const BarChart = ({ labels, datasets, yAxisLabel = 'Average Time', xAxisLabel = 
     },
   };
 
-  // ---------- KEY FIX: pass plugins LOCALLY (only for this Bar chart) ----------
   return (
     <div className="h-[400px] w-full">
       <Bar data={data} options={options} plugins={[valueLabelsPlugin]} />

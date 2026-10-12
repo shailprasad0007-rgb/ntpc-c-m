@@ -8,10 +8,7 @@ import KpiCard from '../components/KpiCard';
 import OperationalInsights from '../components/OperationalInsights';
 import { useAuth } from '../context/AuthContext';
 import EditPOModal from '../components/EditPOModal';
-// import WelcomeBanner from '../components/WelcomeBanner';
-// import CalendarWidget from '../components/CalendarWidget';
-// import RecentActivity from '../components/RecentActivity';
-import Topbar from '../components/Topbar';
+// import Topbar from '../components/Topbar';
 
 // ------------------------------------------------------------
 // Helpers
@@ -70,6 +67,10 @@ const Dashboard = () => {
   const [editingPO, setEditingPO] = useState(null);
   const [isDeleting, setIsDeleting] = useState(null);
 
+  // NEW: Filters
+  const [enqTypeFilter, setEnqTypeFilter] = useState('ALL');
+  const [sortBy, setSortBy] = useState('recent');
+
   // ---------- Data fetch ----------
   const fetchData = async () => {
     setLoading(true);
@@ -90,6 +91,7 @@ const Dashboard = () => {
     setSelectedPlant(null);
     setSelectedEnqType(null);
     setPage(1);
+    setEnqTypeFilter('ALL'); // reset filter on search
   }, [search]);
 
   // ---------- Actions ----------
@@ -124,6 +126,18 @@ const Dashboard = () => {
       );
     });
   }, [allPos, search]);
+
+  // NEW: Unique enquiry types for the filter chips
+  const uniqueEnqTypes = useMemo(() => {
+    const set = new Set();
+    searchFilteredData.forEach((po) => {
+      const t = String(po.enq_type || '').trim();
+      if (t && t !== 'Unknown' && t !== 'NA' && t !== 'N/A') {
+        set.add(t);
+      }
+    });
+    return ['ALL', ...Array.from(set).sort()];
+  }, [searchFilteredData]);
 
   // ---------- KPIs ----------
   const kpis = useMemo(() => {
@@ -190,15 +204,29 @@ const Dashboard = () => {
     return { labels: Object.keys(counts), data: Object.values(counts) };
   }, [searchFilteredData, selectedPlant]);
 
-  // ---------- Table data ----------
+  // ---------- Table data (with filter + sort) ----------
   const tableData = useMemo(() => {
-    return searchFilteredData.filter((po) => {
+    let filtered = searchFilteredData.filter((po) => {
       const mg = !selectedPlantGroup || getPlantGroup(po.ord_plant) === selectedPlantGroup;
       const mp = !selectedPlant || String(po.ord_plant).trim() === String(selectedPlant).trim();
       const me = !selectedEnqType || po.enq_type === selectedEnqType;
-      return mg && mp && me;
+      const mef = enqTypeFilter === 'ALL' || String(po.enq_type).trim() === enqTypeFilter;
+      return mg && mp && me && mef;
     });
-  }, [searchFilteredData, selectedPlantGroup, selectedPlant, selectedEnqType]);
+
+    // Sorting
+    if (sortBy === 'value-high') {
+      filtered = [...filtered].sort((a, b) => (Number(b.value_inr) || 0) - (Number(a.value_inr) || 0));
+    } else if (sortBy === 'value-low') {
+      filtered = [...filtered].sort((a, b) => (Number(a.value_inr) || 0) - (Number(b.value_inr) || 0));
+    } else if (sortBy === 'oldest') {
+      filtered = [...filtered].sort((a, b) => new Date(a.date) - new Date(b.date));
+    } else {
+      filtered = [...filtered].sort((a, b) => new Date(b.date) - new Date(a.date));
+    }
+
+    return filtered;
+  }, [searchFilteredData, selectedPlantGroup, selectedPlant, selectedEnqType, enqTypeFilter, sortBy]);
 
   const total = tableData.length;
   const paginatedData = tableData.slice((page - 1) * limit, page * limit);
@@ -218,14 +246,6 @@ const Dashboard = () => {
 
   const showBack = selectedPlantGroup || selectedPlant || selectedEnqType;
 
-  const currentDate = new Date().toLocaleString('en-GB', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-
   // ------------------------------------------------------------
   // RENDER
   // ------------------------------------------------------------
@@ -234,19 +254,19 @@ const Dashboard = () => {
       <div className="max-w-[1600px] mx-auto px-4 py-5">
 
         {/* ===================== TOPBAR ===================== */}
-        <div className="mb-5">
+        {/* <div className="mb-5">
           <Topbar />
-        </div>
+        </div> */}
 
-        {/* ===================== LOGIN / LOGOUT BUTTON ===================== */}
+        {/* ===================== LOGIN / LOGOUT ===================== */}
         <div className="mb-5 flex justify-end">
           {user ? (
             <button
               onClick={() => {
-                if (window.confirm('Logout karna hai?')) {
+                
                   logout();
                   navigate('/login');
-                }
+                
               }}
               className="group inline-flex items-center gap-2 bg-gradient-to-r from-red-600 to-rose-600 hover:from-rose-600 hover:to-red-600 text-white px-5 py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all duration-300"
             >
@@ -270,18 +290,6 @@ const Dashboard = () => {
             </Link>
           )}
         </div>
-
-        {/* ===================== BREADCRUMB + DATE ===================== */}
-        {/* <div className="flex flex-wrap justify-between items-center gap-3 mb-5">
-          <div className="flex items-center gap-2 text-xs text-gray-500 bg-white px-3 py-1.5 rounded-full border border-gray-200 shadow-sm">
-            <span className="font-semibold text-blue-700">Home</span>
-            <span>›</span>
-            <span>Dashboard</span>
-          </div>
-          <div className="flex items-center gap-2 text-xs text-gray-500 bg-white px-3 py-1.5 rounded-full border border-gray-200 shadow-sm">
-            <span>{currentDate}</span>
-          </div>
-        </div> */}
 
         {/* ===================== KPI CARDS ===================== */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
@@ -312,15 +320,6 @@ const Dashboard = () => {
             tone="green"
             sparkData={[5, 6, 6, 7, 6, 8, 9]}
           />
-          {/* <KpiCard
-            icon={<span>🔔</span>}
-            title="Pending / Attention Required"
-            value={kpis.pending.toString()}
-            change="+3"
-            subtitle="vs. last week"
-            tone="orange"
-            sparkData={[2, 3, 4, 3, 5, 6, 7]}
-          /> */}
         </div>
 
         {/* ===================== CHART + INSIGHTS ===================== */}
@@ -375,27 +374,95 @@ const Dashboard = () => {
           />
         </div>
 
-        {/* ===================== TABLE ===================== */}
+        {/* ===================== TABLE + FILTERS ===================== */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-5">
-          <div className="p-4 border-b border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
-            <h2 className="text-sm font-bold text-gray-800 flex items-center gap-2">
-              <span className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">≡</span>
-              Live Purchase Orders • Total {total} POs
-            </h2>
-            <div className="flex items-center gap-2 w-full md:w-auto">
-              <div className="relative flex-1 md:flex-none">
-                <input
-                  type="text"
-                  placeholder="Search PO No, Agency..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="pl-8 pr-3 py-2 text-xs border border-gray-200 rounded-full focus:ring-2 focus:ring-blue-500 outline-none w-full md:w-64 bg-gray-50 focus:bg-white"
-                />
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
+          {/* Header */}
+          <div className="p-4 border-b border-gray-100 flex flex-col gap-3">
+
+            {/* Row 1: Title + Search + Sort */}
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+              <h2 className="text-sm font-bold text-gray-800 flex items-center gap-2 flex-wrap">
+                <span className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">≡</span>
+                Live Purchase Orders • Total {total} POs
+                {enqTypeFilter !== 'ALL' && (
+                  <span className="ml-2 px-2 py-0.5 bg-blue-100 text-blue-700 text-[10px] rounded-full font-bold">
+                    Filtered: {enqTypeFilter}
+                  </span>
+                )}
+              </h2>
+
+              <div className="flex items-center gap-2 w-full md:w-auto">
+                <div className="relative flex-1 md:flex-none">
+                  <input
+                    type="text"
+                    placeholder="Search PO No, Agency..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="pl-8 pr-3 py-2 text-xs border border-gray-200 rounded-full focus:ring-2 focus:ring-blue-500 outline-none w-full md:w-64 bg-gray-50 focus:bg-white"
+                  />
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
+                </div>
+
+                <select
+                  value={sortBy}
+                  onChange={(e) => { setSortBy(e.target.value); setPage(1); }}
+                  className="px-3 py-2 text-xs border border-gray-200 rounded-full focus:ring-2 focus:ring-blue-500 outline-none bg-gray-50 focus:bg-white font-semibold text-gray-600 cursor-pointer"
+                >
+                  <option value="recent">Sort: Recent</option>
+                  <option value="oldest">Sort: Oldest</option>
+                  <option value="value-high">Sort: Value High</option>
+                  <option value="value-low">Sort: Value Low</option>
+                </select>
               </div>
+            </div>
+
+            {/* Row 2: Enquiry Type Filter Chips */}
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mr-1">
+                Enquiry Type:
+              </span>
+
+              {uniqueEnqTypes.map((type) => {
+                const isActive = enqTypeFilter === type;
+                const count =
+                  type === 'ALL'
+                    ? searchFilteredData.length
+                    : searchFilteredData.filter((p) => String(p.enq_type).trim() === type).length;
+
+                return (
+                  <button
+                    key={type}
+                    onClick={() => { setEnqTypeFilter(type); setPage(1); }}
+                    className={`px-3 py-1 text-[11px] font-bold rounded-full border transition-all ${
+                      isActive
+                        ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-transparent shadow-md'
+                        : 'bg-white text-gray-600 border-gray-200 hover:border-blue-300 hover:text-blue-600 hover:bg-blue-50'
+                    }`}
+                  >
+                    {type}
+                    <span
+                      className={`ml-1.5 text-[9px] font-extrabold ${
+                        isActive ? 'text-blue-100' : 'text-gray-400'
+                      }`}
+                    >
+                      {count}
+                    </span>
+                  </button>
+                );
+              })}
+
+              {enqTypeFilter !== 'ALL' && (
+                <button
+                  onClick={() => { setEnqTypeFilter('ALL'); setPage(1); }}
+                  className="ml-1 text-[10px] text-red-500 hover:text-red-700 font-bold underline"
+                >
+                  Clear ✕
+                </button>
+              )}
             </div>
           </div>
 
+          {/* Table body */}
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead className="bg-gray-50 text-gray-500 uppercase text-[10px] tracking-wider">
@@ -537,12 +604,6 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-
-        {/* ===================== RIGHT COLUMN (Calendar + Activity) - COMMENTED ===================== */}
-        {/* <div className="xl:col-span-1 space-y-5">
-          <CalendarWidget />
-          <RecentActivity />
-        </div> */}
 
         {/* ===================== EDIT MODAL ===================== */}
         {editingPO && (
