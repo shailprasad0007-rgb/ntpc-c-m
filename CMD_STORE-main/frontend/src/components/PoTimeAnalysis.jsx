@@ -80,7 +80,7 @@ const PoTimeAnalysis = ({ pos, compact = false }) => {
     }
 
     // ---- WEEKS ----
-    if (timeView === 'weeks') {
+    if (timeView === '') {
       return {
         chartData: {
           labels: enqTypes,

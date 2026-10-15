@@ -2,13 +2,13 @@
 import { useEffect, useState, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { poApi } from '../api/poApi';
-import DonutChart from '../components/DonutChart';
+import ChartCard from '../components/ChartCard';
+import { CHART_CONFIGS } from '../config/charts';
 import PoTimeAnalysis from '../components/PoTimeAnalysis';
-import KpiCard from '../components/KpiCard';
-import OperationalInsights from '../components/OperationalInsights';
+import KpiCard from '../components/Cards/KpiCard';
+import OperationalInsights from '../components/Cards/OperationalInsights';
 import { useAuth } from '../context/AuthContext';
 import EditPOModal from '../components/EditPOModal';
-// import Topbar from '../components/Topbar';
 
 // ------------------------------------------------------------
 // Helpers
@@ -60,14 +60,9 @@ const Dashboard = () => {
   const [page, setPage] = useState(1);
   const limit = 10;
 
-  const [selectedPlantGroup, setSelectedPlantGroup] = useState(null);
-  const [selectedPlant, setSelectedPlant] = useState(null);
-  const [selectedEnqType, setSelectedEnqType] = useState(null);
-
   const [editingPO, setEditingPO] = useState(null);
   const [isDeleting, setIsDeleting] = useState(null);
 
-  // NEW: Filters
   const [enqTypeFilter, setEnqTypeFilter] = useState('ALL');
   const [sortBy, setSortBy] = useState('recent');
 
@@ -87,11 +82,8 @@ const Dashboard = () => {
   useEffect(() => { fetchData(); }, []);
 
   useEffect(() => {
-    setSelectedPlantGroup(null);
-    setSelectedPlant(null);
-    setSelectedEnqType(null);
     setPage(1);
-    setEnqTypeFilter('ALL'); // reset filter on search
+    setEnqTypeFilter('ALL');
   }, [search]);
 
   // ---------- Actions ----------
@@ -127,7 +119,7 @@ const Dashboard = () => {
     });
   }, [allPos, search]);
 
-  // NEW: Unique enquiry types for the filter chips
+  // ---------- Unique enquiry types ----------
   const uniqueEnqTypes = useMemo(() => {
     const set = new Set();
     searchFilteredData.forEach((po) => {
@@ -171,50 +163,13 @@ const Dashboard = () => {
     };
   }, [searchFilteredData]);
 
-  // ---------- Chart data ----------
-  const plantGroupData = useMemo(() => {
-    const counts = {};
-    searchFilteredData.forEach((po) => {
-      const g = getPlantGroup(po.ord_plant);
-      if (g && g !== 'Unknown') counts[g] = (counts[g] || 0) + 1;
-    });
-    return { labels: Object.keys(counts), data: Object.values(counts) };
-  }, [searchFilteredData]);
-
-  const specificPlantData = useMemo(() => {
-    if (!selectedPlantGroup) return { labels: [], data: [] };
-    const counts = {};
-    searchFilteredData
-      .filter((po) => getPlantGroup(po.ord_plant) === selectedPlantGroup)
-      .forEach((po) => {
-        const code = String(po.ord_plant || '').trim();
-        if (code) counts[code] = (counts[code] || 0) + 1;
-      });
-    return { labels: Object.keys(counts), data: Object.values(counts) };
-  }, [searchFilteredData, selectedPlantGroup]);
-
-  const enqTypeData = useMemo(() => {
-    if (!selectedPlant) return { labels: [], data: [] };
-    const counts = {};
-    searchFilteredData
-      .filter((po) => String(po.ord_plant).trim() === String(selectedPlant).trim())
-      .forEach((po) => {
-        if (po.enq_type) counts[po.enq_type] = (counts[po.enq_type] || 0) + 1;
-      });
-    return { labels: Object.keys(counts), data: Object.values(counts) };
-  }, [searchFilteredData, selectedPlant]);
-
-  // ---------- Table data (with filter + sort) ----------
+  // ---------- Table data ----------
   const tableData = useMemo(() => {
     let filtered = searchFilteredData.filter((po) => {
-      const mg = !selectedPlantGroup || getPlantGroup(po.ord_plant) === selectedPlantGroup;
-      const mp = !selectedPlant || String(po.ord_plant).trim() === String(selectedPlant).trim();
-      const me = !selectedEnqType || po.enq_type === selectedEnqType;
       const mef = enqTypeFilter === 'ALL' || String(po.enq_type).trim() === enqTypeFilter;
-      return mg && mp && me && mef;
+      return mef;
     });
 
-    // Sorting
     if (sortBy === 'value-high') {
       filtered = [...filtered].sort((a, b) => (Number(b.value_inr) || 0) - (Number(a.value_inr) || 0));
     } else if (sortBy === 'value-low') {
@@ -226,25 +181,10 @@ const Dashboard = () => {
     }
 
     return filtered;
-  }, [searchFilteredData, selectedPlantGroup, selectedPlant, selectedEnqType, enqTypeFilter, sortBy]);
+  }, [searchFilteredData, enqTypeFilter, sortBy]);
 
   const total = tableData.length;
   const paginatedData = tableData.slice((page - 1) * limit, page * limit);
-
-  const getTitle = () => {
-    if (!selectedPlantGroup) return 'Order Plant Group Overview';
-    if (!selectedPlant) return `Plant Codes for ${selectedPlantGroup}`;
-    if (!selectedEnqType) return `Enq Type Distribution - Plant ${selectedPlant}`;
-    return `Purchase Orders - ${selectedPlantGroup} / ${selectedPlant} / ${selectedEnqType}`;
-  };
-
-  const handleBack = () => {
-    if (selectedEnqType) setSelectedEnqType(null);
-    else if (selectedPlant) setSelectedPlant(null);
-    else setSelectedPlantGroup(null);
-  };
-
-  const showBack = selectedPlantGroup || selectedPlant || selectedEnqType;
 
   // ------------------------------------------------------------
   // RENDER
@@ -253,20 +193,13 @@ const Dashboard = () => {
     <div className="min-h-screen bg-[#f5f7fb]">
       <div className="max-w-[1600px] mx-auto px-4 py-5">
 
-        {/* ===================== TOPBAR ===================== */}
-        {/* <div className="mb-5">
-          <Topbar />
-        </div> */}
-
         {/* ===================== LOGIN / LOGOUT ===================== */}
         <div className="mb-5 flex justify-end">
           {user ? (
             <button
               onClick={() => {
-                
-                  logout();
-                  navigate('/login');
-                
+                logout();
+                navigate('/login');
               }}
               className="group inline-flex items-center gap-2 bg-gradient-to-r from-red-600 to-rose-600 hover:from-rose-600 hover:to-red-600 text-white px-5 py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all duration-300"
             >
@@ -320,9 +253,36 @@ const Dashboard = () => {
             tone="green"
             sparkData={[5, 6, 6, 7, 6, 8, 9]}
           />
+          <KpiCard
+            icon={<span>💬</span>}
+            title="Chat Box"
+            value="Coming soon.."
+            change="HI"
+            subtitle=""
+            tone="orange"
+            sparkData={[5, 6, 6, 7, 6, 8, 9]}
+          />
         </div>
 
-        {/* ===================== CHART + INSIGHTS ===================== */}
+        {/* ===================== MINI CHART GRID ===================== */}
+        <div className="mb-6">
+          <div className="flex items-center justify-between mb-3">
+            {/* <div>
+              <h2 className="text-base font-bold text-gray-800">Analytics Overview</h2>
+              <p className="text-[11px] text-gray-400 mt-0.5">
+                Click any chart to explore in detail
+              </p>
+            </div> */}
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {CHART_CONFIGS.map((config) => (
+              <ChartCard key={config.id} config={config} pos={searchFilteredData} />
+            ))}
+          </div>
+        </div>
+
+        {/* ===================== BAR CHART + INSIGHTS ===================== */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 mb-5">
           <div className="lg:col-span-9 bg-white rounded-[20px] p-5 shadow-[0_4px_20px_rgba(0,0,0,0.04)] border border-gray-100">
             <PoTimeAnalysis pos={searchFilteredData} compact={true} />
@@ -332,54 +292,10 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* ===================== DONUT CHART ===================== */}
-        <div className="bg-white rounded-[20px] p-5 shadow-[0_4px_20px_rgba(0,0,0,0.04)] border border-gray-100 mb-6">
-          <div className="flex items-start justify-between gap-4 mb-4">
-            <div>
-              <h3 className="text-[15px] font-bold text-gray-800">{getTitle()}</h3>
-              <p className="text-[11px] text-gray-400 mt-1">
-                Click on a Plant Group to view specific plant codes
-              </p>
-            </div>
-            {showBack && (
-              <button
-                onClick={handleBack}
-                className="shrink-0 px-4 py-2 text-xs bg-gray-900 text-white rounded-full font-bold hover:bg-gray-700 transition"
-              >
-                ← Back
-              </button>
-            )}
-          </div>
-
-          <DonutChart
-            labels={
-              !selectedPlantGroup
-                ? plantGroupData.labels
-                : !selectedPlant
-                ? specificPlantData.labels
-                : enqTypeData.labels
-            }
-            data={
-              !selectedPlantGroup
-                ? plantGroupData.data
-                : !selectedPlant
-                ? specificPlantData.data
-                : enqTypeData.data
-            }
-            onClick={(label) => {
-              if (!selectedPlantGroup) setSelectedPlantGroup(label);
-              else if (!selectedPlant) setSelectedPlant(label);
-              else setSelectedEnqType(label);
-            }}
-          />
-        </div>
-
         {/* ===================== TABLE + FILTERS ===================== */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-5">
-          {/* Header */}
           <div className="p-4 border-b border-gray-100 flex flex-col gap-3">
 
-            {/* Row 1: Title + Search + Sort */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
               <h2 className="text-sm font-bold text-gray-800 flex items-center gap-2 flex-wrap">
                 <span className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">≡</span>
@@ -416,7 +332,6 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* Row 2: Enquiry Type Filter Chips */}
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mr-1">
                 Enquiry Type:
@@ -462,7 +377,6 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Table body */}
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead className="bg-gray-50 text-gray-500 uppercase text-[10px] tracking-wider">
@@ -557,7 +471,6 @@ const Dashboard = () => {
             </table>
           </div>
 
-          {/* Pagination */}
           <div className="p-4 border-t border-gray-100 flex flex-wrap justify-between items-center gap-3 bg-gray-50/50">
             <span className="text-xs text-gray-500">
               Showing {total === 0 ? 0 : (page - 1) * limit + 1} to{' '}
@@ -605,7 +518,6 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* ===================== EDIT MODAL ===================== */}
         {editingPO && (
           <EditPOModal
             po={editingPO}
