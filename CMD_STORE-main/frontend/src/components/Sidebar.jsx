@@ -8,52 +8,73 @@ import {
 } from 'lucide-react';
 
 const MENU = [
-  { name: 'Dashboard', path: '/', icon: LayoutDashboard },
-  { name: 'About Us', path: '/about-us', icon: Info },
-  { name: 'CmDepartment', path: '/cmdepartment', icon: Folder },
-  { name: 'Important Links', path: '/important-links', icon: LinkIcon },
-  { name: 'Circulars & Guidelines', path: '/circulars', icon: FileText },
-  { name: 'Dop', path: '/doppage', icon: TrendingUp },
-  { name: 'External Links', path: '/external-links', icon: LinkIcon },
-  { name: 'Coal Mining Links', path: '/coal-mining-links', icon: LinkIcon },
-  { name: 'Manuals & Standards', path: '/manuals', icon: BookOpen },
+  { name: 'Dashboard', path: '/', icon: LayoutDashboard, iconBg: 'bg-blue-500', iconColor: 'text-white' },
+  { name: 'About Us', path: '/about-us', icon: Info, iconBg: 'bg-cyan-500/90', iconColor: 'text-white' },
+  { name: 'CmDepartment', path: '/cmdepartment', icon: Folder, iconBg: 'bg-sky-500/90', iconColor: 'text-white' },
+  { name: 'Important Links', path: '/important-links', icon: LinkIcon, iconBg: 'bg-purple-500/90', iconColor: 'text-white' },
+  { name: 'Circulars & Guidelines', path: '/circulars', icon: FileText, iconBg: 'bg-emerald-500/90', iconColor: 'text-white' },
+  { name: 'Dop', path: '/doppage', icon: TrendingUp, iconBg: 'bg-orange-500/90', iconColor: 'text-white' },
+  { name: 'External Links', path: '/external-links', icon: LinkIcon, iconBg: 'bg-pink-500/90', iconColor: 'text-white' },
+  { name: 'Coal Mining Links', path: '/coal-mining-links', icon: LinkIcon, iconBg: 'bg-teal-500/90', iconColor: 'text-white' },
+  { name: 'Manuals & Standards', path: '/manuals', icon: BookOpen, iconBg: 'bg-indigo-500/90', iconColor: 'text-white' },
 ];
 
 const Sidebar = () => {
   const { user } = useAuth();
 
-  // 👇 Debug — browser console me dikhega
-  console.log('Sidebar user:', user);
-  console.log('User role:', user?.role);
-
   return (
-    <aside
-      className="w-60 shrink-0 flex flex-col text-white relative overflow-hidden"
-      style={{
-        backgroundImage: "url('/sidebar.jpg')",
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-      }}
-    >
-      {/* Dark overlay for readability */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0b1e3a]/40 via-transparent to-[#0b1e3a]/60 pointer-events-none"></div>
+    <aside className="w-60 shrink-0 flex flex-col text-white relative overflow-hidden bg-[#0a1a3a]">
 
-      {/* Content */}
+      {/* ===================== BACKGROUND ===================== */}
+      {/* Base gradient */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0a1a3a] via-[#0d2352] to-[#0a1a3a]"></div>
+
+      {/* Blue radial glow at top-right */}
+      <div
+        className="absolute -top-20 -right-20 w-80 h-80 rounded-full pointer-events-none"
+        style={{
+          background: 'radial-gradient(circle, rgba(59,130,246,0.35) 0%, transparent 70%)',
+          filter: 'blur(40px)',
+        }}
+      ></div>
+
+      {/* Blue curve light streak (bottom) */}
+      <div
+        className="absolute bottom-0 left-0 right-0 h-64 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse at bottom, rgba(56,189,248,0.3) 0%, transparent 60%)',
+        }}
+      ></div>
+
+      {/* Content wrapper */}
       <div className="relative z-10 flex flex-col h-full w-full">
 
-        {/* ===================== NML LOGO ===================== */}
-        <div className="flex items-center justify-center pt-5 pb-3 shrink-0">
-          <img
-            src="/ntpc_logo.jpg"
-            alt="NML Logo"
-            className="w-24 h-auto object-contain drop-shadow-lg"
-          />
+        {/* ===================== DOTTED GRID DECORATION ===================== */}
+        <div className="absolute top-5 left-4 grid grid-cols-3 gap-2.5 pointer-events-none">
+          {Array.from({ length: 9 }).map((_, i) => (
+            <span key={i} className="w-1 h-1 rounded-full bg-blue-400/60"></span>
+          ))}
         </div>
 
-        {/* ===================== MENU — ONE BOX ===================== */}
-        <nav className="flex-1 px-3 pb-4">
-          <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-2 space-y-1 shadow-lg shadow-black/20">
+        {/* ===================== LOGO ===================== */}
+        <div className="flex items-center justify-center pt-6 pb-4 shrink-0">
+          <div className="bg-white rounded-2xl px-4 py-3 shadow-[0_0_30px_rgba(59,130,246,0.4)] border-2 border-white/30">
+            <img
+              src="/ntpc_logo.jpg"
+              alt="NTPC Logo"
+              className="w-20 h-auto object-contain"
+            />
+          </div>
+        </div>
+
+        {/* ===================== MENU — ONE BIG BOX ===================== */}
+        <nav className="flex-1 px-3 pb-4 overflow-y-auto sidebar-scroll">
+          <div
+            className="rounded-[22px] p-2.5 space-y-1.5 border border-blue-500/40 shadow-[0_0_25px_rgba(59,130,246,0.25),inset_0_0_30px_rgba(59,130,246,0.08)]"
+            style={{
+              background: 'linear-gradient(180deg, rgba(15,32,71,0.9) 0%, rgba(10,26,58,0.95) 100%)',
+            }}
+          >
 
             {MENU.map((item) => (
               <NavLink
@@ -61,55 +82,75 @@ const Sidebar = () => {
                 to={item.path}
                 end={item.path === '/'}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 px-3 py-2.5 text-sm rounded-xl transition-all duration-300 ${
+                  `group flex items-center gap-3 px-3 py-2.5 text-sm rounded-2xl transition-all duration-300 relative overflow-hidden ${
                     isActive
-                      ? 'bg-blue-600 text-white font-semibold shadow-md'
-                      : 'text-gray-100 hover:bg-white/15 hover:text-white'
+                      ? 'bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 text-white font-bold shadow-[0_0_20px_rgba(59,130,246,0.6)] border border-blue-400/60'
+                      : 'text-gray-100 hover:bg-white/5'
                   }`
                 }
               >
-                <item.icon size={18} />
-                <span className="truncate">{item.name}</span>
-                <ChevronRight size={14} className="ml-auto opacity-50" />
+                {/* Left accent bar on active */}
+                {({ isActive }) => null}
+
+                {/* Icon box */}
+                <div className={`w-9 h-9 rounded-xl ${item.iconBg} flex items-center justify-center shrink-0 shadow-lg border border-white/20`}>
+                  <item.icon size={16} className={item.iconColor} />
+                </div>
+
+                {/* Text */}
+                <span className="truncate flex-1 text-left text-[13px] font-semibold">
+                  {item.name}
+                </span>
+
+                {/* Chevron */}
+                <ChevronRight
+                  size={16}
+                  className="ml-auto opacity-70 group-hover:translate-x-0.5 transition-transform shrink-0"
+                />
               </NavLink>
             ))}
 
+            {/* ===================== DIVIDER ===================== */}
+            <div className="my-2 mx-2 border-t border-blue-400/30"></div>
+
             {/* ===================== ADMIN UPLOAD ===================== */}
-            {user?.role === 'admin' ? (
+            {(user?.role === 'admin' || true) && (
               <NavLink
                 to="/upload"
                 className={({ isActive }) =>
-                  `flex items-center gap-3 px-3 py-2.5 text-sm rounded-xl transition-all duration-300 border-t border-white/10 mt-1 pt-3 ${
+                  `group flex items-center gap-3 px-3 py-2.5 text-sm rounded-2xl transition-all duration-300 ${
                     isActive
-                      ? 'bg-blue-600 text-white font-semibold shadow-md'
-                      : 'text-gray-100 hover:bg-white/15 hover:text-white'
+                      ? 'bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 text-white font-bold shadow-[0_0_20px_rgba(59,130,246,0.6)] border border-blue-400/60'
+                      : 'text-gray-100 hover:bg-white/5'
                   }`
                 }
               >
-                <Upload size={18} />
-                <span className="truncate">Admin Upload</span>
-                <ChevronRight size={14} className="ml-auto opacity-50" />
-              </NavLink>
-            ) : (
-              /* Temporary test — hata sakte ho */
-              <NavLink
-                to="/upload"
-                className={({ isActive }) =>
-                  `flex items-center gap-3 px-3 py-2.5 text-sm rounded-xl transition-all duration-300 border-t border-white/10 mt-1 pt-3 ${
-                    isActive
-                      ? 'bg-blue-600 text-white font-semibold shadow-md'
-                      : 'text-gray-100 hover:bg-white/15 hover:text-white'
-                  }`
-                }
-              >
-                <Upload size={18} />
-                <span className="truncate">Admin Upload</span>
-                <ChevronRight size={14} className="ml-auto opacity-50" />
+                <div className="w-9 h-9 rounded-xl bg-blue-500/90 flex items-center justify-center shrink-0 shadow-lg border border-white/20">
+                  <Upload size={16} className="text-white" />
+                </div>
+                <span className="truncate flex-1 text-left text-[13px] font-semibold">
+                  Admin Upload
+                </span>
+                <ChevronRight size={16} className="ml-auto opacity-70 group-hover:translate-x-0.5 transition-transform shrink-0" />
               </NavLink>
             )}
 
           </div>
         </nav>
+
+        {/* ===================== BOTTOM POWER PLANT IMAGE ===================== */}
+        <div className="relative h-32 shrink-0 pointer-events-none">
+          <img
+            src="/sidebar.jpg"
+            alt=""
+            className="absolute bottom-0 left-0 w-full h-full object-cover opacity-70"
+            style={{
+              maskImage: 'linear-gradient(to bottom, transparent 0%, black 40%)',
+              WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 40%)',
+            }}
+          />
+        </div>
+
       </div>
     </aside>
   );

@@ -59,6 +59,7 @@ const LINKS_DATA = [
     id: 6,
     title: 'E-String',
     url: 'https://www.nML.co.in',
+    logo: '/eString.png',
     theme: 'purple',
     bg: 'bg-purple-50',
     text: 'text-purple-600',
