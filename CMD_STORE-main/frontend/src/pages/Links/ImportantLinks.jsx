@@ -3,7 +3,6 @@ const LINKS_DATA = [
   {
     id: 1,
     title: 'NTPC HOME PAGE',
-    description: 'Official NTPC website — company information & updates',
     url: 'https://www.ntpc.co.in',
     theme: 'red',
     bg: 'bg-red-50',
@@ -14,8 +13,7 @@ const LINKS_DATA = [
   },
   {
     id: 2,
-    title: 'NML HOME PAGE',
-    description: 'NML official portal — mining operations & updates',
+    title: 'NML HOME PAGE', 
     url: 'https://www.nML.co.in',
     theme: 'emerald',
     bg: 'bg-emerald-50',
@@ -27,7 +25,6 @@ const LINKS_DATA = [
   {
     id: 3,
     title: 'NML SSC-C&M',
-    description: 'NML official portal — mining operations & updates',
     url: 'https://www.nML.co.in',
     theme: 'orange',
     bg: 'bg-orange-50',
@@ -39,7 +36,6 @@ const LINKS_DATA = [
   {
     id: 4,
     title: 'VDC',
-    description: 'NML official portal — mining operations & updates',
     url: 'https://www.nML.co.in',
     theme: 'blue',
     bg: 'bg-blue-50',
@@ -51,7 +47,6 @@ const LINKS_DATA = [
   {
     id: 5,
     title: 'USSC',
-    description: 'NML official portal — mining operations & updates',
     url: 'https://10.4.8.75/English/Defaut.aspx',
     theme: 'red',
     bg: 'bg-red-50',
@@ -63,7 +58,6 @@ const LINKS_DATA = [
   {
     id: 6,
     title: 'E-String',
-    description: 'NML official portal — mining operations & updates',
     url: 'https://www.nML.co.in',
     theme: 'purple',
     bg: 'bg-purple-50',
@@ -75,7 +69,6 @@ const LINKS_DATA = [
   {
     id: 7,
     title: 'QR Cell',
-    description: 'NML official portal — mining operations & updates',
     url: 'https://10.0.20.98/qrdata',
     theme: 'yellow',
     bg: 'bg-yellow-50',
@@ -87,7 +80,6 @@ const LINKS_DATA = [
   {
     id: 8,
     title: 'Corporate C&M',
-    description: 'NML official portal — mining operations & updates',
     url: 'https://10.0.8.168/CS/CSIND.php',
     theme: 'pink',
     bg: 'bg-pink-50',
@@ -96,17 +88,50 @@ const LINKS_DATA = [
     border: 'border-pink-100',
     btnHover: 'hover:bg-pink-600',
   },
-  
+  {
+    id: 9,
+    title: 'Gem Tender',
+    url: 'https://www.ntpc.co.in',
+    theme: 'red',
+    bg: 'bg-red-50',
+    text: 'text-red-600',
+    hoverBg: 'group-hover:bg-red-600',
+    border: 'border-red-100',
+    btnHover: 'hover:bg-red-600',
+  },
+  {
+    id: 10,
+    title: 'Govt. e-Marketplace',
+    url: 'https://gem.gov.in/',
+    theme: 'red',
+    bg: 'bg-red-50',
+    text: 'text-red-600',
+    hoverBg: 'group-hover:bg-red-600',
+    border: 'border-red-100',
+    btnHover: 'hover:bg-red-600',
+  },
+  {
+    id: 11,
+    title: 'GePNIC Portal',
+    url: 'https://eprocurentpc.nic.in/nicgep/app',
+    theme: 'red',
+    bg: 'bg-red-50',
+    text: 'text-red-600',
+    hoverBg: 'group-hover:bg-red-600',
+    border: 'border-red-100',
+    btnHover: 'hover:bg-red-600',
+  },
+
 ];
 
 const ImportantLinks = () => {
   return (
-    <div className="min-h-screen bg-[#f5f7fb]">
+    <div className="min-h-screen bg-linear-to-r from-[#EDE0D3] via-[#F0C9C9] to-[#EBDFF2]">
       <div className="max-w-[1600px] mx-auto px-4 py-5">
 
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-xs text-gray-500 bg-white px-3 py-1.5 rounded-full border border-gray-200 shadow-sm w-fit mb-5">
-          <span className="font-semibold text-blue-700">Home</span>
+        <div className="flex items-center gap-2 text-xs text-white bg-linear-to-r from-[#1717B0] to-[#34BDD9] px-3 py-1.5 rounded-full border border-gray-200 shadow-sm w-fit mb-5">
+          <span className="font-semibold text-white">Home</span>
           <span>›</span>
           <span>Important Links</span>
         </div>
@@ -117,11 +142,11 @@ const ImportantLinks = () => {
           <p className="text-xs text-gray-500 mb-6">Quick access to frequently used portals</p>
 
           {/* Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
             {LINKS_DATA.map((item) => (
               <div
                 key={item.id}
-                className={`group flex items-center gap-4 p-5 rounded-2xl border ${item.border} bg-gray-50 hover:bg-white hover:shadow-lg transition-all duration-300`}
+                className={`group flex items-center gap-4 p-5 rounded-2xl border ${item.border}  hover:bg-white hover:shadow-lg transition-all duration-300`}
               >
                 {/* Icon circle */}
                 <div

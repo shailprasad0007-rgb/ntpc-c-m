@@ -30,12 +30,12 @@ const documents = [
 
 const DopPage = () => {
   return (
-    <div className="min-h-screen bg-gray-50 ">
+    <div className="min-h-screen bg-linear-to-r from-[#EDE0D3] via-[#F0C9C9] to-[#EBDFF2] ">
       <div className="max-w-[1600px] mx-auto px-4 py-5">
 
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-xs text-gray-500 bg-white px-3 py-1.5 rounded-full border border-gray-200 shadow-sm w-fit mb-5">
-          <span className="font-semibold text-blue-700">Home</span>
+        <div className="flex items-center gap-2 text-xs text-white bg-linear-to-r from-[#1717B0] to-[#34BDD9] px-3 py-1.5 rounded-full border border-gray-200 shadow-sm w-fit mb-5">
+          <span className="font-semibold text-white">Home</span>
           <span>›</span>
           <span>Delegation of Powers (DOP)</span>
         </div>

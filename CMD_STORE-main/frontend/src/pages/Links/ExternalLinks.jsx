@@ -1,19 +1,8 @@
 // src/pages/ExternalLinks.jsx
 const LINKS_DATA = [
+  
   {
     id: 1,
-    title: 'GEM TENDER',
-    description: 'Official GEM tender website — procurement information & updates',
-    url: 'https://www.gem.gov.in',
-    theme: 'blue',
-    bg: 'bg-blue-50',
-    text: 'text-blue-600',
-    hoverBg: 'group-hover:bg-blue-600',
-    border: 'border-blue-100',
-    btnHover: 'hover:bg-blue-600',
-  },
-  {
-    id: 2,
     title: 'NTPC TENDER',
     description: 'NTPC official portal — procurement information & updates',
     url: 'https://www.ntpc.co.in',
@@ -25,7 +14,7 @@ const LINKS_DATA = [
     btnHover: 'hover:bg-emerald-600',
   },
   {
-    id: 3,
+    id: 2,
     title: 'UDYAM VERIFICATION',
     description: 'NTPC official portal — procurement information & updates',
     url: 'https://www.ntpc.co.in',
@@ -37,7 +26,7 @@ const LINKS_DATA = [
     btnHover: 'hover:bg-red-600',
   },
   {
-    id: 4,
+    id: 3,
     title: 'BIS LINE',
     description: 'NTPC official portal — procurement information & updates',
     url: 'https://www.ntpc.co.in',
@@ -49,7 +38,7 @@ const LINKS_DATA = [
     btnHover: 'hover:bg-yellow-600',
   },
   {
-    id: 5,
+    id: 4,
     title: 'GST NSM CODE',
     description: 'NTPC official portal — procurement information & updates',
     url: 'https://www.ntpc.co.in',
@@ -64,12 +53,12 @@ const LINKS_DATA = [
 
 const ExternalLinks = () => {
   return (
-    <div className="min-h-screen bg-[#f5f7fb]">
+    <div className="min-h-screen bg-linear-to-r from-[#EDE0D3] via-[#F0C9C9] to-[#EBDFF2]">
       <div className="max-w-[1600px] mx-auto px-4 py-5">
 
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-xs text-gray-500 bg-white px-3 py-1.5 rounded-full border border-gray-200 shadow-sm w-fit mb-5">
-          <span className="font-semibold text-blue-700">Home</span>
+        <div className="flex items-center gap-2 text-xs text-white bg-linear-to-r from-[#1717B0] to-[#34BDD9] px-3 py-1.5 rounded-full border border-gray-200 shadow-sm w-fit mb-5">
+          <span className="font-semibold text-white">Home</span>
           <span>›</span>
           <span>External Links</span>
         </div>

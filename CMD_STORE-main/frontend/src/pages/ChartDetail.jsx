@@ -230,31 +230,34 @@ const ChartDetail = () => {
   }
 
   return (
-    <div className="max-w-[1400px] mx-auto px-4 py-6">
+    <div className="max-w-[1400px] mx-auto px-4 py-6 min-h-screen bg-linear-to-r from-[#EDE0D3] via-[#F0C9C9] to-[#EBDFF2]">
       {/* Header */}
       <div className="flex items-start justify-between mb-5 flex-wrap gap-3">
         <div>
           <button
             onClick={() => navigate('/')}
-            className="text-xs text-gray-500 hover:text-blue-600 mb-1 flex items-center gap-1 font-semibold"
+            className="flex items-center gap-2 text-xs text-white bg-linear-to-r from-[#1717B0] to-[#34BDD9] px-3 py-1.5 rounded-full border border-gray-200 shadow-sm w-fit mb-5"
           >
             ← Back to Dashboard
           </button>
-          <h1 className="text-xl font-bold text-gray-800">{getChartTitle()}</h1>
-          <p className="text-xs text-gray-400 mt-0.5">{getChartSubtitle()}</p>
+          <div className="flex items-center gap-2 text-xs text-black bg-linear-to-r from-[#95F5BD] to-[#E8DF8B] px-3 py-1.5 rounded-full border border-gray-200 shadow-sm w-fit mb-5">
+          <h1 className="text-xl font-bold ">{getChartTitle()}</h1>
+          <br/>
+          <p className="text-xs  mt-0.5">{getChartSubtitle()}</p>
+          </div>
 
           {/* Breadcrumb */}
           {isPlantGroupChart && breadcrumb.length > 1 && (
-            <div className="flex items-center gap-1.5 mt-2 text-[11px]">
+            <div className="flex items-center gap-1.5 mt-2 text-[11px] bg-linear-to-r from-[#DAB3F5] to-[#F7C988] px-3 py-1.5 rounded-full border border-gray-200 shadow-sm w-fit mb-5">
               {breadcrumb.map((b, i) => (
                 <span key={i} className="flex items-center gap-1.5">
-                  {i > 0 && <span className="text-gray-300">›</span>}
+                  {i > 0 && <span className="text-black">›</span>}
                   <button
                     onClick={b.onClick}
                     className={`font-semibold hover:underline ${
                       i === breadcrumb.length - 1
-                        ? 'text-blue-600'
-                        : 'text-gray-500 hover:text-gray-800'
+                        ? 'text-black'
+                        : 'text-black hover:black'
                     }`}
                   >
                     {b.label}
@@ -269,7 +272,7 @@ const ChartDetail = () => {
           {showBackButton && (
             <button
               onClick={handleBack}
-              className="px-4 py-2 text-xs bg-gray-200 text-gray-700 rounded-full font-bold hover:bg-gray-300 transition"
+              className="px-4 py-2 text-xs bg-gray-600 text-white rounded-full font-bold hover:bg-black transition"
             >
               ← Back
             </button>
@@ -277,7 +280,7 @@ const ChartDetail = () => {
           {showBackButton && (
             <button
               onClick={handleResetAll}
-              className="px-4 py-2 text-xs bg-gray-900 text-white rounded-full font-bold hover:bg-gray-700 transition"
+              className="px-4 py-2 text-xs bg-black text-white rounded-full font-bold hover:bg-gray-700 transition"
             >
               Reset All
             </button>
@@ -286,7 +289,7 @@ const ChartDetail = () => {
       </div>
 
       {/* Chart */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
+      <div className="bg-gray-100 rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
         {loading ? (
           <div className="h-72 flex items-center justify-center text-gray-400">
             Loading chart…

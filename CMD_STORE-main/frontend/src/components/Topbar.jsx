@@ -1,27 +1,26 @@
-
 // src/components/Topbar.jsx
-
 import { useAuth } from '../context/AuthContext';
 import topbar from '../../public/topbar.jpg';
+import Events from '../pages/Links/Events';
 
 const Topbar = () => {
   const { user } = useAuth();
 
   return (
-    <header className="relative w-full overflow-hidden rounded-2xl shadow-lg">
-
+    <>
+    <header className="relative w-full overflow-hidden rounded-2xl shadow-lg mb-3">
       {/* Background Banner Image */}
       <img
         src={topbar}
         alt="Shared Service Site C&M"
-        className="w-full h-40 md:h-44 object-cover "
+        className="w-full h-40 md:h-44 object-cover"
       />
 
-      {/* Welcome and Heading - Top Position */}
-      <div className="absolute inset-x-0 top-3 md:top-4 pointer-events-none px-6 md:px-10 flex flex-col">
+      {/* Welcome text overlay (left side) */}
+       <div className="absolute inset-x-0 top-3 md:top-4 pointer-events-none px-6 md:px-10 flex flex-col">
 
         {/* Welcome Text */}
-        <marquee direction="right">
+        
         <h1
           className="text-2xl md:text-4xl font-extrabold tracking-[0.15em] text-white drop-shadow-lg"
           style={{
@@ -29,15 +28,15 @@ const Topbar = () => {
             textShadow: '0 3px 10px rgba(0,0,0,0.7)',
           }}
         >
-          Welcome
+          WELCOME
         </h1>
-        </marquee>
+        
 
         {/* Main Heading */}
         <h2
-          className="text-2xl md:text-3xl font-bold uppercase tracking-[0.08em] drop-shadow-lg mt-2"
+          className="text-2xl md:text-2xl font-bold uppercase tracking-[0.08em] drop-shadow-lg mt-2"
           style={{
-            fontFamily: "'IBM Plex Sans', sans-serif",
+            fontFamily: "Cursive",
             color: '#FFFFFF',
             textShadow: '0 2px 8px rgba(0,0,0,0.5)',
           }}
@@ -59,18 +58,19 @@ const Topbar = () => {
 
       </div>
 
-      {/* NML Logo - Top Right */}
-      <div className="absolute top-15 right-4 md:right-5 z-20 flex items-center gap-3">
-  <div className="rounded-lg px-4 py-2 flex items-center justify-center">
-    <img
-      src="/nml_logo.png"
-      alt="NML Logo"
-      className="h-10 md:h-14 w-auto object-contain drop-shadow-md"
-    />
-  </div>
-</div>
-
+      {/* NML Logo (top-right) */}
+      <div className="absolute top-20 right-4 md:right-2 z-10 flex items-center gap-3">
+        <div className="rounded-lg px-4 py-2 flex items-center justify-center">
+          <img
+            src="/nml-logo.png"
+            alt="NML Logo"
+            className="h-10 md:h-14 w-50 object-contain drop-shadow-md "
+          />
+        </div>
+      </div>
     </header>
+    <Events/>
+    </>
   );
 };
 

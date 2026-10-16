@@ -21,7 +21,7 @@ import ChartDetail from './pages/ChartDetail';   // ← NEW
 const App = () => {
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-[#f5f7fb] flex flex-col">
+      <div className="min-h-screen bg-linear-to-r from-[#9D94F2] via-[#9198ED] to-[#85C2D6] flex flex-col">
 
         <div className="flex flex-1 min-h-0">
           <Sidebar />

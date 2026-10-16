@@ -1,6 +1,6 @@
 const AboutUs = () => {
   return (
-    <div className="max-w-[1400px] mx-auto px-4 py-6">
+    <div className="max-w-[1400px] mx-auto px-4 py-6 bg-linear-to-r from-[#EDE0D3] via-[#F0C9C9] to-[#EBDFF2]">
 
       {/* ===================== HERO HEADER ===================== */}
       <div className="relative bg-gradient-to-r from-[#0f2e9e] via-[#1e5fd0] to-[#1e85ec] rounded-2xl p-8 md:p-12 mb-6 overflow-hidden shadow-lg">

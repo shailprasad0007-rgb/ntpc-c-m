@@ -10,6 +10,7 @@ import OperationalInsights from '../components/Cards/OperationalInsights';
 import { useAuth } from '../context/AuthContext';
 import EditPOModal from '../components/EditPOModal';
 
+
 // ------------------------------------------------------------
 // Helpers
 // ------------------------------------------------------------
@@ -132,23 +133,24 @@ const Dashboard = () => {
   }, [searchFilteredData]);
 
   // ---------- KPIs ----------
-  const kpis = useMemo(() => {
-    const total = searchFilteredData.length;
-    const totalValue = searchFilteredData.reduce(
-      (sum, po) => sum + (Number(po.value_inr) || 0),
-      0
-    );
-    const avgDays =
-      total > 0
-        ? searchFilteredData.reduce((sum, po) => sum + (Number(po.pr_po_days) || 0), 0) / total
-        : 0;
-    return {
-      total,
-      totalValue,
-      avgWeeks: avgDays / 7,
-      pending: searchFilteredData.filter((po) => deriveStatus(po) === 'Pending').length,
-    };
-  }, [searchFilteredData]);
+ // ---------- KPIs ----------
+const kpis = useMemo(() => {
+  const total = searchFilteredData.length;
+  const totalValue = searchFilteredData.reduce(
+    (sum, po) => sum + (Number(po.value_inr) || 0),
+    0
+  );
+  const avgDays =
+    total > 0
+      ? searchFilteredData.reduce((sum, po) => sum + (Number(po.pr_po_days) || 0), 0) / total
+      : 0;
+  return {
+    total,
+    totalValue,
+    avgDays,                                          // ← CHANGED: was avgWeeks
+    pending: searchFilteredData.filter((po) => deriveStatus(po) === 'Pending').length,
+  };
+}, [searchFilteredData]);
 
   // ---------- Insights ----------
   const insights = useMemo(() => {
@@ -190,8 +192,9 @@ const Dashboard = () => {
   // RENDER
   // ------------------------------------------------------------
   return (
-    <div className="min-h-screen bg-[#f5f7fb]">
+    <div className="min-h-screen bg-linear-to-r from-[#EDE0D3] via-[#F0C9C9] to-[#EBDFF2] ">
       <div className="max-w-[1600px] mx-auto px-4 py-5">
+       
 
         {/* ===================== LOGIN / LOGOUT ===================== */}
         <div className="mb-5 flex justify-end">
@@ -247,7 +250,7 @@ const Dashboard = () => {
           <KpiCard
             icon={<span>⏱</span>}
             title="Average Completion Time"
-            value={`${kpis.avgWeeks.toFixed(1)} Weeks`}
+            value={`${kpis.avgDays.toFixed(1)} Days`}
             change="+18%"
             subtitle="vs. last month"
             tone="green"
@@ -266,14 +269,7 @@ const Dashboard = () => {
 
         {/* ===================== MINI CHART GRID ===================== */}
         <div className="mb-6">
-          <div className="flex items-center justify-between mb-3">
-            {/* <div>
-              <h2 className="text-base font-bold text-gray-800">Analytics Overview</h2>
-              <p className="text-[11px] text-gray-400 mt-0.5">
-                Click any chart to explore in detail
-              </p>
-            </div> */}
-          </div>
+          
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {CHART_CONFIGS.map((config) => (
