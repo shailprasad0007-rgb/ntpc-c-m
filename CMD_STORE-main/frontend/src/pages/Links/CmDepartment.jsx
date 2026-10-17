@@ -42,7 +42,7 @@ const staffMembers = [
     mobile: '9109178536',
     intercom: '--',
     // Replace with actual image paths
-    image: '/kalku.jpg', 
+    image: '/.jpg', 
   },
   {
     id: 4,
@@ -84,19 +84,19 @@ const staffMembers = [
     mobile: '9437489558',
     intercom: '--',
     // Replace with actual image paths
-    image: '/pad.jpg', 
+    image: '/.jpg', 
   },
 ];
 
 const CmDepartment = () => {
   return (
-    <div className="min-h-screen bg-linear-to-r from-[#EDE0D3] via-[#F0C9C9] to-[#EBDFF2]">
+    <div className="min-h-screen bg-gray-50 py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         
         {/* Page Header */}
-        <div className="mb-10 text-center py-5 px-10">
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">C & M Department Directory</h1>
-          <p className="mt-2 text-lg text-gray-500">Key Personnel and Contact Information</p>
+        <div className="mb-10 text-center">
+          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">C & M Department and Stores <br/>Directory</h1>
+          <p className="mt-2 text-lg text-gray-500">  Key Personnel and Contact Information</p>
         </div>
 
         {/* Staff Grid */}
